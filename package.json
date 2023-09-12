@@ -6,7 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "eslint": "eslint '**/*.{js,jsx}'",
-    "lint": "npm run eslint && npm run stylelint && next lint",
+    "lint": "npm run eslint && next lint",
     "prepare": "npx husky install",
     "start": "next start"
   },
