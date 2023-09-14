@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { FC } from 'react';
 import { UserAuthForm } from './UserAuthForm';
-import { buttonVariants } from './ui/button';
+import { buttonVariants } from './ui/Button';
 
 interface SignInProps {}
 

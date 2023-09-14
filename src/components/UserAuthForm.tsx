@@ -2,29 +2,49 @@
 
 import * as React from 'react';
 
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Label } from '@radix-ui/react-label';
-import { Button } from './ui/button';
-import { Icons } from './ui/icons';
-import { Input } from './ui/input';
+import { signIn } from 'next-auth/react';
+import { useState } from 'react';
+import { Button } from './ui/Button';
+import { Icons } from './ui/Icons';
+import { Input } from './ui/Input';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { toast } = useToast();
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
+  // async function onSubmit(event: React.SyntheticEvent) {
+  //   event.preventDefault();
+  //   setIsLoading(true);
+
+  //   setTimeout(() => {
+  //     setIsLoading(false);
+  //   }, 3000);
+  // }
+
+  const loginWithGoogle = async () => {
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      await signIn('google');
+    } catch (error) {
+      toast({
+        title: 'There was a problem',
+        description: 'An error occurred while trying to login with Google.',
+        variant: 'destructive',
+      });
+    } finally {
       setIsLoading(false);
-    }, 3000);
-  }
+    }
+  };
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
-      <form onSubmit={onSubmit}>
+      <form>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -54,7 +74,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
+      <Button onClick={loginWithGoogle} variant="outline" type="button" disabled={isLoading}>
         {isLoading ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
         ) : (
