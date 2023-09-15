@@ -1,3 +1,4 @@
+import Navbar from '@/components/Navbar';
 import { Toaster } from '@/components/ui/Toaster';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -13,8 +14,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} p-4`}>
-        <main>{children}</main>
+      <body>
+        <Navbar />
+        <main className={`${inter.className} p-4`}>{children}</main>
         <Toaster />
       </body>
     </html>

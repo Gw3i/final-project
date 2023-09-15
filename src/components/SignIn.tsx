@@ -10,8 +10,6 @@ interface SignInProps {}
 const SignIn: FC<SignInProps> = async ({}) => {
   const session = getAuthSession();
 
-  console.log(await session);
-
   return (
     <section className="relative grid gap-4 max-w-xl mx-auto pt-12 justify-center text-center">
       <h1 className="text-headline-large">Trading Automation</h1>
