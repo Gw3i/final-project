@@ -28,8 +28,7 @@ const SignIn: FC<SignInProps> = async ({}) => {
 
       <div className="mx-auto mt-4 flex w-full flex-col justify-center space-y-4 sm:w-[350px]">
         <div className="flex flex-col space-y-1 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
-          <p className="text-sm text-muted-foreground">Enter your email below to create your account</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Create an account or login</h1>
         </div>
         <UserAuthForm />
         <p className="max-w-sm mx-auto text-center text-sm text-muted-foreground">
