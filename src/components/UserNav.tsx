@@ -1,6 +1,7 @@
 'use client';
 
 import { User } from 'next-auth';
+import { signOut } from 'next-auth/react';
 import { FC } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/Avatar';
 import { Button } from './ui/Button';
@@ -17,6 +18,13 @@ import {
 export interface UserNavProps {
   user: Pick<User, 'email' | 'image' | 'name'>;
 }
+
+const logout = (event: Event) => {
+  const signInUrl = `${window.location.origin}/sign-in`;
+
+  event.preventDefault();
+  signOut({ callbackUrl: signInUrl });
+};
 
 const UserNav: FC<UserNavProps> = ({ user }) => {
   return (
@@ -41,7 +49,9 @@ const UserNav: FC<UserNavProps> = ({ user }) => {
           <DropdownMenuItem>Profile</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Log out</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onSelect={logout}>
+          Log out
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
