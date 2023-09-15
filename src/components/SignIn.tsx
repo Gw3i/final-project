@@ -1,3 +1,4 @@
+import { getAuthSession } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -6,7 +7,11 @@ import { buttonVariants } from './ui/Button';
 
 interface SignInProps {}
 
-const SignIn: FC<SignInProps> = ({}) => {
+const SignIn: FC<SignInProps> = async ({}) => {
+  const session = getAuthSession();
+
+  console.log(await session);
+
   return (
     <section className="relative grid gap-4 max-w-xl mx-auto pt-12 justify-center text-center">
       <h1 className="text-headline-large">Trading Automation</h1>
@@ -18,7 +23,7 @@ const SignIn: FC<SignInProps> = ({}) => {
         href="/examples/authentication"
         className={cn(buttonVariants({ variant: 'ghost' }), 'absolute right-[16px] top-0 md:right-8 md:top-8')}
       >
-        Login
+        {(await session) ? 'Logged In' : 'Login'}
       </Link>
 
       <div className="mx-auto mt-4 flex w-full flex-col justify-center space-y-4 sm:w-[350px]">

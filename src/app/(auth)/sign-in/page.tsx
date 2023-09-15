@@ -1,11 +1,10 @@
-import { FC } from 'react'
+import SignIn from '@/components/SignIn';
+import { FC } from 'react';
 
-interface pageProps {
-  
-}
+interface pageProps {}
 
 const page: FC<pageProps> = ({}) => {
-  return <div>page</div>
-}
+  return <SignIn />;
+};
 
-export default page
+export default page;
