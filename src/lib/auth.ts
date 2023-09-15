@@ -1,7 +1,6 @@
 import { db } from '@/lib/db';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { NextAuthOptions, getServerSession } from 'next-auth';
-import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 
 export const authOptions: NextAuthOptions = {
@@ -17,16 +16,12 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
-    GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    }),
   ],
   callbacks: {
     async session({ token, session }) {
       if (token) {
         session.user.id = token.id;
-        session.user.name = token.name;
+        // session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.picture;
       }
@@ -48,7 +43,7 @@ export const authOptions: NextAuthOptions = {
 
       return {
         id: dbUser.id,
-        name: dbUser.name,
+        // name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
       };
