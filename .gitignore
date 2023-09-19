@@ -18,6 +18,8 @@
 # misc
 .DS_Store
 *.pem
+/.sass-cache
+.eslintcache
 
 # debug
 npm-debug.log*
@@ -25,6 +27,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
+.env*
 .env*.local
 
 # vercel
@@ -33,3 +37,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
