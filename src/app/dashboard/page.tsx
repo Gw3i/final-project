@@ -1,9 +1,7 @@
 import { FC } from 'react';
 
-interface PageProps {}
-
-const Page: FC<PageProps> = ({}) => {
+const page: FC = () => {
   return <div>Dashboard</div>;
 };
 
-export default Page;
+export default page;
