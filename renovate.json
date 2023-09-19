@@ -1,11 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ],
+  "extends": ["config:base"],
   "prHeader": "Update Deps: ",
-  "assignees": [
-    "Gw3i"
-  ],
-  "labels": ["dependencies"]
+  "assignees": ["Gw3i"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "Automatically merge minor and patch-level updates",
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "automerge": true,
+      "automergeType": "branch"
+    },
+    {
+      "schedule": ["every 3 months on the first day of the month"]
+    }
+  ]
 }
