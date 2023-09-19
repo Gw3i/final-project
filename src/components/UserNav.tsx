@@ -1,10 +1,10 @@
 'use client';
 
-import { Button } from '@/components/ui/Button';
 import { User } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { FC } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/Avatar';
+import { Button } from './ui/Button';
 import {
   DropdownMenu,
   DropdownMenuContent,
