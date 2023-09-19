@@ -1,28 +1,19 @@
 import { getAuthSession } from '@/lib/auth';
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { FC } from 'react';
 import { UserAuthForm } from './UserAuthForm';
-import { buttonVariants } from './ui/Button';
 
-interface SignInProps {}
+interface AuthProps {}
 
-const SignIn: FC<SignInProps> = async ({}) => {
+const Auth: FC<AuthProps> = async ({}) => {
   const session = getAuthSession();
 
   return (
     <section className="relative grid gap-4 max-w-xl mx-auto pt-12 justify-center text-center">
-      <h1 className="text-headline-large">Trading Automation</h1>
+      <h1 className="text-headline-large leading-[1.1]">Trading Automation</h1>
       <h2 className="text-body-medium">
         Welcome to your journey automating your Binance trading processes quick and easy
       </h2>
-
-      <Link
-        href="/examples/authentication"
-        className={cn(buttonVariants({ variant: 'ghost' }), 'absolute right-[16px] top-0 md:right-8 md:top-8')}
-      >
-        {(await session) ? 'Logged In' : 'Login'}
-      </Link>
 
       <div className="mx-auto mt-4 flex w-full flex-col justify-center space-y-4 sm:w-[350px]">
         <div className="flex flex-col space-y-1 text-center">
@@ -45,4 +36,4 @@ const SignIn: FC<SignInProps> = async ({}) => {
   );
 };
 
-export default SignIn;
+export default Auth;

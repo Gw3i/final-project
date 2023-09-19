@@ -1,10 +1,10 @@
-import SignIn from '@/components/SignIn';
+import Auth from '@/components/Auth';
 import { FC } from 'react';
 
 interface pageProps {}
 
 const page: FC<pageProps> = ({}) => {
-  return <SignIn />;
+  return <Auth />;
 };
 
 export default page;
