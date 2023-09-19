@@ -1,7 +1,7 @@
-import { buttonVariants } from '@/components/ui/Button';
 import { getAuthSession } from '@/lib/auth';
 import Link from 'next/link';
 import UserNav from './UserNav';
+import { buttonVariants } from './ui/Button';
 
 const Navbar = async () => {
   const session = await getAuthSession();
