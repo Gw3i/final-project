@@ -3,9 +3,7 @@ import Link from 'next/link';
 import { FC } from 'react';
 import { UserAuthForm } from './UserAuthForm';
 
-interface AuthProps {}
-
-const Auth: FC<AuthProps> = async ({}) => {
+const Auth: FC = async () => {
   const session = getAuthSession();
 
   return (
