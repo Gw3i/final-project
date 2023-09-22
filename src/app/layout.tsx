@@ -3,6 +3,7 @@ import { Toaster } from '@/components/ui/Toaster';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.scss';
+import Providers from '@/components/Providers';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,12 +18,14 @@ export default function RootLayout({ children, authModal }: { children: React.Re
   return (
     <html lang="en">
       <body>
-        <Navbar />
+        <Providers>
+          <Navbar />
 
-        {authModal}
+          {authModal}
 
-        <main className={`${inter.className} p-4`}>{children}</main>
-        <Toaster />
+          <main className={`${inter.className} p-4`}>{children}</main>
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );
