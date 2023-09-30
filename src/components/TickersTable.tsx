@@ -1,6 +1,8 @@
 'use client';
 
 import useTickers from '@/hooks/use-ticker';
+import { formatPrice } from '@/lib/utils/format-price';
+import { formatPriceChange } from '@/lib/utils/format-price-change';
 import { FC } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
 
@@ -12,6 +14,7 @@ const TickersTable: FC<TickersTableProps> = ({}) => {
     'ETHUSDT',
     'BNBUSDT',
     'XRPUSDT',
+    'USDCUSDT',
     'ADAUSDT',
     'SOLUSDT',
     'DOGEUSDT',
@@ -29,12 +32,12 @@ const TickersTable: FC<TickersTableProps> = ({}) => {
     <>
       <article>
         <Table>
-          <TableCaption>Cryptocurrency ticker list</TableCaption>
+          <TableCaption>Top Cryptocurrency Ticker list</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Name</TableHead>
+              <TableHead className="w-[100px]">Symbol</TableHead>
               <TableHead>Price</TableHead>
-              <TableHead>Change (24h)</TableHead>
+              <TableHead className="text-right">Change (24h)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -42,8 +45,15 @@ const TickersTable: FC<TickersTableProps> = ({}) => {
               tickerData.tickers.map((ticker) => (
                 <TableRow key={ticker.symbol}>
                   <TableCell className="font-medium">{ticker.symbol}</TableCell>
-                  <TableCell>{ticker.openPrice}</TableCell>
-                  <TableCell>{ticker.priceChangePercent}%</TableCell>
+                  <TableCell>{formatPrice(ticker.lastPrice)}</TableCell>
+                  <TableCell
+                    className={`text-right ${
+                      ticker.priceChangePercent.includes('-') ? 'text-red-500' : 'text-green-500'
+                    }`}
+                  >
+                    {ticker.priceChangePercent.includes('-') ? '' : '+'}
+                    {formatPriceChange(ticker.priceChangePercent)}%
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
