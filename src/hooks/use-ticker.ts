@@ -1,4 +1,4 @@
-import { TickerMini, TickerMiniWithState } from '@/types/coins/ticker.types';
+import { TickerFull, TickerMiniWithState, TickersConfig } from '@/types/coins/ticker.types';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
@@ -7,34 +7,33 @@ import { toast } from './use-toast';
 const BINANCE_API_BASE_URL = 'https://api.binance.com/api/v3';
 const BINANCE_24H_TICKER_URL = '/ticker/24hr';
 
-const useTickers = (): TickerMiniWithState => {
-  const [tickers, setTickers] = useState<TickerMini[] | null>(null);
+const useTickers = (config: TickersConfig): TickerMiniWithState => {
+  const [tickers, setTickers] = useState<TickerFull[] | null>(null);
 
   const { mutate: getTickers, isLoading } = useMutation({
     mutationFn: async () => {
-      const coinPairs = '["BTCUSDT","ETHUSDT","BNBUSDT"]';
-      const responseType = 'MINI';
-      const tickerUrl = `${BINANCE_API_BASE_URL}${BINANCE_24H_TICKER_URL}?symbols=${coinPairs}&type=${responseType}`;
+      const responseType = 'FULL';
 
-      console.log(tickerUrl);
+      const tickerUrl = `${BINANCE_API_BASE_URL}${BINANCE_24H_TICKER_URL}?symbols=${JSON.stringify(
+        config.symbols,
+      )}&type=${responseType}`;
 
-      const { data } = await axios.get<TickerMini[]>(tickerUrl);
-
-      console.log({ data });
+      const { data } = await axios.get<TickerFull[]>(tickerUrl);
 
       setTickers(data);
       return data;
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
-        if (error.response?.status === 503) {
+        if (error.response?.status === 400) {
           toast({
-            title: 'Could not connect.',
-            description: 'Could not connect to Ticker. Please try again or contact support.',
+            title: 'Not found',
+            description: 'Could not found. Please try again or contact support.',
             variant: 'destructive',
           });
-          // TODO: Add more error states
         }
+
+        // TODO: Add more error states
       }
     },
   });
@@ -42,7 +41,7 @@ const useTickers = (): TickerMiniWithState => {
   useEffect(() => {
     getTickers();
 
-    const interval = setInterval(getTickers, 60000);
+    const interval = setInterval(getTickers, config.interval ?? 600000);
 
     return () => clearInterval(interval);
   }, []);

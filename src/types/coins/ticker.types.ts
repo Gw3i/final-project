@@ -39,7 +39,36 @@ export interface TickerMini {
   count: number;
 }
 
+export interface TickerFull {
+  symbol: string;
+  priceChange: string;
+  priceChangePercent: string;
+  weightedAvgPrice: string;
+  prevClosePrice: string;
+  lastPrice: string;
+  lastQty: string;
+  bidPrice: string;
+  bidQty: string;
+  askPrice: string;
+  askQty: string;
+  openPrice: string;
+  highPrice: string;
+  lowPrice: string;
+  volume: string;
+  quoteVolume: string;
+  openTime: number;
+  closeTime: number;
+  firstId: number;
+  lastId: number;
+  count: number;
+}
+
 export interface TickerMiniWithState {
-  tickers: TickerMini[] | null;
+  tickers: TickerFull[] | null;
   isLoading: boolean;
+}
+
+export interface TickersConfig {
+  symbols: string[];
+  interval?: number;
 }
