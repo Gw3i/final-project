@@ -24,17 +24,17 @@ export function GET(response: NextResponse) {
 
     setTimeout(() => {
       websocketStreamClient.ticker('btcbusd');
-    }, 3000);
+    }, 300000);
 
     // ping server
-    setTimeout(() => websocketStreamClient.pingServer(), 4000);
+    setTimeout(() => websocketStreamClient.pingServer(), 400000);
 
-    setTimeout(() => websocketStreamClient.disconnect(), 6000);
+    setTimeout(() => websocketStreamClient.disconnect(), 600000);
 
     return new Response(JSON.stringify(coin));
   } catch (error) {
     console.error(error);
     // Handle errors and return an error response
-    return new Response('Could not connect to Ticker. Please try again or contact support', { status: 500 });
+    return new Response('Could not connect to Ticker. Please try again or contact support', { status: 503 });
   }
 }

@@ -23,3 +23,23 @@ export interface Ticker {
   L: number;
   n: number;
 }
+
+export interface TickerMini {
+  symbol: string;
+  openPrice: string;
+  highPrice: string;
+  lowPrice: string;
+  lastPrice: string;
+  volume: string;
+  quoteVolume: string;
+  openTime: string;
+  closeTime: number;
+  firstId: number;
+  lastId: number;
+  count: number;
+}
+
+export interface TickerMiniWithState {
+  tickers: TickerMini[] | null;
+  isLoading: boolean;
+}
