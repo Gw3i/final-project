@@ -1,9 +1,9 @@
 import Navbar from '@/components/Navbar';
+import Providers from '@/components/Providers';
 import { Toaster } from '@/components/ui/Toaster';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.scss';
-import Providers from '@/components/Providers';
 
 export const dynamic = 'force-dynamic';
 
