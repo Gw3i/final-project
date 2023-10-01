@@ -1,7 +1,7 @@
 import { Ticker } from '@/types/coins/ticker.types';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export function GET(response: NextResponse) {
+export function GET(request: NextRequest, response: NextResponse) {
   try {
     const { Console } = require('console');
     const { WebsocketStream } = require('@binance/connector');
