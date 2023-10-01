@@ -1,11 +1,9 @@
+import { BINANCE_24H_TICKER_URL, BINANCE_API_BASE_URL } from '@/constants/binance.constants';
 import { TickerFull, TickerMiniWithState, TickersConfig } from '@/types/coins/ticker.types';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from './use-toast';
-
-const BINANCE_API_BASE_URL = 'https://api.binance.com/api/v3';
-const BINANCE_24H_TICKER_URL = '/ticker/24hr';
 
 const useTickers = (config: TickersConfig): TickerMiniWithState => {
   const [tickers, setTickers] = useState<TickerFull[] | null>(null);
@@ -44,6 +42,7 @@ const useTickers = (config: TickersConfig): TickerMiniWithState => {
     const interval = setInterval(getTickers, config.interval ?? 600000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

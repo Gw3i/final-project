@@ -1,3 +1,4 @@
+// TODO: Remove route if not necessary
 import { Ticker } from '@/types/coins/ticker.types';
 import { NextRequest, NextResponse } from 'next/server';
 
