@@ -31,6 +31,12 @@ const useTickers = (config: TickersConfig): TickerMiniWithState => {
           });
         }
 
+        toast({
+          title: error.code,
+          description: error.message,
+          variant: 'destructive',
+        });
+
         // TODO: Add more error states
       }
     },

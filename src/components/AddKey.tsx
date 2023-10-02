@@ -9,10 +9,10 @@ interface AddKeyProps {}
 const AddKey: FC<AddKeyProps> = ({}) => {
   return (
     <section className="grid items-center justify-center text-center">
-      <h2 className="text-headline-small mb-8">Setup API Key</h2>
-      <p className="max-w-xs text-center">
-        For using trading feature, setup your API Key on Binance. Follow these instructions to generate an Binance API
-        key
+      <h2 className="text-headline-small mb-8">Setup API Connection</h2>
+      <p className="max-w-sm text-center">
+        For using trading feature, setup your API Key & Secret on Binance. Follow these instructions to generate an
+        Binance API key
       </p>
 
       <Button asChild variant="link">
