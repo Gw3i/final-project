@@ -24,11 +24,16 @@ export async function POST(request: NextRequest, response: NextResponse) {
       throw new Error('SECRET_KEY is not defined in the environment variables.');
     }
 
+    console.log({ apiKey, apiSecret });
+
     // Test connection to binance
     const exchange = new ccxt.binance({ apiKey, secret: apiSecret });
-    const balance = exchange.account();
+    const requiredCredentials = exchange.requiredCredentials;
+    const hasRequiredCredentials = requiredCredentials.apiKey && requiredCredentials.secret;
 
-    if (!balance.total) {
+    console.log(hasRequiredCredentials);
+
+    if (!hasRequiredCredentials) {
       return new Response('Not valid credentials. Please try again or contact support.', { status: 403 });
     }
 

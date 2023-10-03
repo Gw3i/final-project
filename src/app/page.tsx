@@ -14,7 +14,7 @@ export default async function Home() {
 
       <section className="">
         <h2 className="text-headline-small mb-4">Presets</h2>
-        <Presets />
+        <Presets hasSecret={session?.user.hasSecret} />
       </section>
 
       <section>

@@ -28,13 +28,14 @@ const KeyForm = () => {
     onError: (error) => {
       if (error instanceof AxiosError) {
         return toast({
-          title: error.name,
-          description: error.message,
+          title: error.message,
+          description: error.response?.data,
           variant: 'destructive',
         });
       }
     },
     onSuccess: () => {
+      router.refresh();
       router.push('/');
 
       return toast({
