@@ -1,15 +1,15 @@
 'use client';
 
+import { Button } from '@/components/ui/Button';
+import { Icons } from '@/components/ui/Icons';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
 import { toast } from '@/hooks/use-toast';
 import { CreateApiKeyPayload } from '@/lib/validators/api-key.validator';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Button } from './ui/Button';
-import { Icons } from './ui/Icons';
-import { Input } from './ui/Input';
-import { Label } from './ui/label';
 
 const KeyForm = () => {
   const [apiKey, setApiKey] = useState('');

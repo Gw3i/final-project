@@ -1,11 +1,7 @@
 'use client';
 
-import { CheckCircle2, XCircle } from 'lucide-react';
-import { Session } from 'next-auth';
-import { signOut } from 'next-auth/react';
-import { FC } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/Avatar';
-import { Button } from './ui/Button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Button } from '@/components/ui/Button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +10,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/Dropdown-menu';
+} from '@/components/ui/Dropdown-menu';
+import { CheckCircle2, XCircle } from 'lucide-react';
+import { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
+import { FC } from 'react';
 
 export interface UserNavProps {
   session: Session;

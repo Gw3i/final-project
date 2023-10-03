@@ -1,8 +1,8 @@
+import { Button } from '@/components/ui/Button';
 import { MoveUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
 import KeyForm from './KeyForm';
-import { Button } from './ui/Button';
 
 interface AddKeyProps {}
 
