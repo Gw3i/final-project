@@ -18,6 +18,9 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Copy component.json
+        run: cp path/to/component.json .          
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v3
         with:
