@@ -8,15 +8,43 @@ import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { CreateDCAPresetPayload, DCAPresetValidator } from '@/lib/validators/preset-form.validator';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import axios, { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
+import { useRouter } from 'next/router';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 const DCAPresetForm = () => {
+  const router = useRouter();
+
   const form = useForm<CreateDCAPresetPayload>({
     resolver: zodResolver(DCAPresetValidator),
+  });
+
+  const { mutate: createPresetDCA, isLoading } = useMutation({
+    mutationFn: async (payload: CreateDCAPresetPayload) => {
+      await axios.post('/api/preset-dca', payload);
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        return toast({
+          title: error.message,
+          description: error.response?.data,
+          variant: 'destructive',
+        });
+      }
+    },
+    onSuccess: () => {
+      router.push('/');
+
+      return toast({
+        title: 'Preset created successfully!',
+        description: 'The Preset DCA was successfully created.',
+      });
+    },
   });
 
   const intervals = [
@@ -30,14 +58,7 @@ const DCAPresetForm = () => {
   ] as const;
 
   function onSubmit(data: CreateDCAPresetPayload) {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    createPresetDCA(data);
   }
 
   return (
@@ -80,7 +101,7 @@ const DCAPresetForm = () => {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
+                    <SelectValue placeholder="Select an interval" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
