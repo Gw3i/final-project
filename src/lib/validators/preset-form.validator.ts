@@ -6,14 +6,14 @@ export const DCAPresetValidator = z.object({
     .min(2, {
       message: 'Symbol must be at least 2 characters.',
     })
-    .max(7, {
-      message: 'Symbol must not be longer than 30 characters.',
+    .max(5, {
+      message: 'Symbol must not be longer than 5 characters.',
     }),
-  amount: z.number({
-    required_error: 'A amount is required.',
+  amount: z.string({
+    required_error: 'Amount is required.',
   }),
   interval: z.string({
-    required_error: 'Please select a interval.',
+    required_error: 'Please select an interval.',
   }),
   endDate: z.date().optional(),
 });
