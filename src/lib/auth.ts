@@ -25,6 +25,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.name = token.name;
         session.user.image = token.picture;
+        session.user.hasSecret = token.hasSecret;
       }
 
       return session;
@@ -46,6 +47,7 @@ export const authOptions: NextAuthOptions = {
         email: dbUser.email,
         name: dbUser.name,
         picture: dbUser.image,
+        hasSecret: dbUser.hasSecret,
       } as JWT;
     },
     redirect() {

@@ -1,7 +1,7 @@
+import { buttonVariants } from '@/components/ui/Button';
 import { getAuthSession } from '@/lib/auth';
 import Link from 'next/link';
 import UserNav from './UserNav';
-import { buttonVariants } from './ui/Button';
 
 const Navbar = async () => {
   const session = await getAuthSession();
@@ -11,7 +11,7 @@ const Navbar = async () => {
       <Link href="/">LOGO</Link>
       <div>
         {session?.user ? (
-          <UserNav user={session.user} />
+          <UserNav session={session} />
         ) : (
           <Link className={buttonVariants({ variant: 'default' })} href="/sign-in">
             Sign In

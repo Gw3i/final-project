@@ -40,6 +40,16 @@ model User {
   emailVerified DateTime?
   image         String?
   name          String?
+  hasSecret     Boolean   @default(false)
   accounts      Account[]
   sessions      Session[]
+  Secret        Secret[]
+}
+
+model Secret {
+  id     String @id @default(cuid())
+  key    String
+  secret String
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

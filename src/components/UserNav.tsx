@@ -1,10 +1,7 @@
 'use client';
 
-import { User } from 'next-auth';
-import { signOut } from 'next-auth/react';
-import { FC } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/Avatar';
-import { Button } from './ui/Button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Button } from '@/components/ui/Button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,10 +10,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/Dropdown-menu';
+} from '@/components/ui/Dropdown-menu';
+import { CheckCircle2, XCircle } from 'lucide-react';
+import { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
+import { FC } from 'react';
 
 export interface UserNavProps {
-  user: Pick<User, 'email' | 'image' | 'name'>;
+  session: Session;
 }
 
 const logout = (event: Event) => {
@@ -26,22 +27,33 @@ const logout = (event: Event) => {
   signOut({ callbackUrl: signInUrl });
 };
 
-const UserNav: FC<UserNavProps> = ({ user }) => {
+const UserNav: FC<UserNavProps> = ({ session }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            {user.image && <AvatarImage src={user.image} alt={`${user.name} avatar`} />}
-            {!user.image && <AvatarFallback>$</AvatarFallback>}
+            {session.user.image && <AvatarImage src={session.user.image} alt={`${session.user.name} avatar`} />}
+            {!session.user.image && <AvatarFallback>$</AvatarFallback>}
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
-            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+            <p className="text-sm font-medium leading-none">{session.user.name}</p>
+            <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
+            <p className="text-xs leading-none text-muted-foreground mt-1">
+              {session.user.hasSecret ? (
+                <span className="flex items-center gap-1 text-green-500">
+                  <CheckCircle2 className="w-4" /> Secrets added
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-red-500">
+                  <XCircle className="w-4" /> No Secrets added
+                </span>
+              )}
+            </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

@@ -6,6 +6,7 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id: UserId;
     email: string;
+    hasSecret: boolean;
   }
 }
 
@@ -14,6 +15,7 @@ declare module 'next-auth' {
     user: User & {
       id: UserId;
       email: string;
+      hasSecret: boolean;
     };
   }
 }
