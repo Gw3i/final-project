@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { Button } from './ui/Button';
 import { Icons } from './ui/Icons';
 import { Input } from './ui/Input';
-import { Label } from './ui/label';
+import { Label } from './ui/Label';
 
 const KeyForm = () => {
   const [apiKey, setApiKey] = useState('');
