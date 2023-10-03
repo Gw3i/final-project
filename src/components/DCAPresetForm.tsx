@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/Button';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/Form';
 import { Input } from '@/components/ui/Input';
 import { Calendar } from '@/components/ui/calendar';
 import { toast } from '@/hooks/use-toast';
@@ -12,7 +12,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -119,10 +119,44 @@ const DCAPresetForm = () => {
 
         <FormField
           control={form.control}
+          name="startDate"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Start Date (optional)</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={'outline'}
+                      className={cn('w-[240px] pl-3 text-left font-normal', !field.value && 'text-muted-foreground')}
+                    >
+                      {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    disabled={(startDate: Date) => startDate < new Date()}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormDescription>If no Start Date is selected, the automation will start in 1 hour.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="endDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>End Date</FormLabel>
+              <FormLabel>End Date (optional)</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -145,10 +179,14 @@ const DCAPresetForm = () => {
                   />
                 </PopoverContent>
               </Popover>
+              <FormDescription>
+                If no End Date is selected, the automation will run for 1 year or until you stop it.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <Button type="submit">Set Automation</Button>
       </form>
     </FormProvider>
