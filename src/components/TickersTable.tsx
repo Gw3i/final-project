@@ -27,7 +27,7 @@ const TickersTable = () => {
 
   return (
     <>
-      <article>
+      <section>
         {tickerData.isLoading && <p className="text-center">Loading...</p>}
 
         {tickerData.tickers && !tickerData.isLoading && (
@@ -59,7 +59,7 @@ const TickersTable = () => {
             </TableBody>
           </Table>
         )}
-      </article>
+      </section>
     </>
   );
 };

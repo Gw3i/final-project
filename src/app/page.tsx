@@ -7,13 +7,20 @@ export default async function Home() {
   const session = await getAuthSession();
 
   return (
-    <>
-      <h1 className="text-center">Home</h1>
+    <div className="grid gap-8 mt-8">
+      <h1 className="text-headline-medium text-center">HOME</h1>
+
       {!session?.user.hasSecret && <AddKey />}
-      <Presets />
-      <div className="mt-16">
+
+      <section className="">
+        <h2 className="text-headline-small mb-4">Presets</h2>
+        <Presets />
+      </section>
+
+      <section>
+        <h2 className="text-headline-small mb-4">Ticker</h2>
         <TickersTable />
-      </div>
-    </>
+      </section>
+    </div>
   );
 }
