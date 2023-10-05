@@ -4,8 +4,8 @@ import { CheckCircle2, XCircle } from 'lucide-react';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { FC } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/Avatar';
-import { Button } from './ui/Button';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Button } from './ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/Dropdown-menu';
+} from './ui/dropdown-menu';
 
 export interface UserNavProps {
   session: Session;

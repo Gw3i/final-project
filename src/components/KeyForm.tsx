@@ -6,10 +6,10 @@ import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Button } from './ui/Button';
-import { Icons } from './ui/Icons';
-import { Input } from './ui/Input';
-import { Label } from './ui/Label';
+import { Button } from './ui/button';
+import { Icons } from './ui/icons';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 
 const KeyForm = () => {
   const [apiKey, setApiKey] = useState('');

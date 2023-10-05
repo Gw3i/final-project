@@ -21,7 +21,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
     const secretKey = process.env.SECRET_KEY;
 
     if (!secretKey) {
-      throw new Error('SECRET_KEY is not defined in the environment variables.');
+      throw new Error('Secret could not be retrieved.');
     }
 
     console.log({ apiKey, apiSecret });

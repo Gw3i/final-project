@@ -3,7 +3,7 @@
 import useTickers from '@/hooks/use-ticker';
 import { formatPrice } from '@/lib/utils/format-price';
 import { formatPriceChange } from '@/lib/utils/format-price-change';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 
 const TickersTable = () => {
   const symbols = [
