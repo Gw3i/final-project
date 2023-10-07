@@ -54,3 +54,9 @@ model Secret {
   exchange String
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Schedule {
+  id        String   @id @default(cuid())
+  schedule  String
+  timestamp DateTime
+}

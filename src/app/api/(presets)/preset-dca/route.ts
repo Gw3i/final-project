@@ -1,3 +1,4 @@
+import { INTERVALS } from '@/constants/preset-dca.constants';
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { DCAPresetValidator } from '@/lib/validators/preset-form.validator';
@@ -51,11 +52,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
     const apiSecret = decrypt(encryptedApiSecret, secretKey, iv);
 
     // PLACE ORDER
-
-    // Create interval for an order
-    // TODO
-
-    // Define the request payload
     const params: Record<string, string> = {
       quantity,
       recvWindow: recvWindow.toString(),
@@ -68,26 +64,35 @@ export async function POST(request: NextRequest, response: NextResponse) {
     const queryString = `quantity=${quantity}&recvWindow=${recvWindow}&side=${side}&symbol=${symbol}&timestamp=${timestamp}&type=${type}`;
     const signature = generateApiPayloadSignature(params, apiSecret);
 
-    // TODO: add key pair, add interval
-
-    const response = await axios.post<AxiosResponse<FullResponse>>(
-      `https://api.binance.com/api/v3/order/test?${queryString}&signature=${signature}`,
-      null,
-      {
-        headers: {
-          'X-MBX-APIKEY': apiKey,
+    const placeOrder = async (queryString: string, signature: string, apiKey: string): Promise<FullResponse> => {
+      const response = await axios.post<AxiosResponse<FullResponse>>(
+        `https://api.binance.com/api/v3/order/test?${queryString}&signature=${signature}`,
+        null,
+        {
+          headers: {
+            'X-MBX-APIKEY': apiKey,
+          },
         },
-      },
-    );
+      );
 
-    if (response.status !== 200) {
-      return new Response('An error occurred. Please try again or contact support', {
-        status: response.status,
-        statusText: response.statusText,
+      db.schedule.create({
+        data: {
+          schedule: 'scheduled',
+          timestamp: new Date(),
+        },
       });
-    }
 
-    return new Response(JSON.stringify(response.data), { status: 200, statusText: 'Order created successfully.' });
+      return response.data.data;
+    };
+
+    const order = await placeOrder(queryString, signature, apiKey);
+
+    const selectedInterval = INTERVALS.find((intrvl) => intrvl.value === interval);
+    const scheduledTime = selectedInterval && timestamp + selectedInterval.time;
+
+    setInterval(placeOrder, scheduledTime);
+
+    return new Response(JSON.stringify(order), { status: 200, statusText: 'Order created successfully.' });
   } catch (error) {
     if (error instanceof AxiosError) {
       return new Response(error.message, { status: error.status });

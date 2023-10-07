@@ -30,3 +30,9 @@ export interface Fill {
 export interface FullResponse extends ResultResponse {
   fills: Fill[];
 }
+
+export interface Interval {
+  label: string;
+  value: string;
+  time: number;
+}
