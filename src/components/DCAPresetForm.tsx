@@ -21,6 +21,11 @@ const DCAPresetForm = () => {
   const router = useRouter();
 
   const form = useForm<CreateDCAPresetPayload>({
+    defaultValues: {
+      amount: '',
+      interval: '',
+      symbol: '',
+    },
     resolver: zodResolver(DCAPresetValidator),
   });
 
@@ -98,7 +103,7 @@ const DCAPresetForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Interval</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select an interval" />
@@ -106,7 +111,7 @@ const DCAPresetForm = () => {
                 </FormControl>
                 <SelectContent>
                   {intervals.map((interval) => (
-                    <SelectItem key={interval.value} value={interval.value}>
+                    <SelectItem key={interval.value} {...((field.value = interval.value), { ...field })}>
                       {interval.label}
                     </SelectItem>
                   ))}

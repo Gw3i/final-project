@@ -10,15 +10,20 @@ import { Button } from './ui/button';
 import { Icons } from './ui/icons';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 const KeyForm = () => {
+  const [exchange, setExchange] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [apiSecret, setApiSecret] = useState('');
   const router = useRouter();
 
+  const exchanges = [{ label: 'Binance', value: 'binance' }];
+
   const { mutate: setupConnection, isLoading } = useMutation({
     mutationFn: async () => {
       const payload: CreateApiKeyPayload = {
+        exchange,
         apiKey,
         apiSecret,
       };
@@ -48,14 +53,24 @@ const KeyForm = () => {
 
   return (
     <form onSubmit={(event) => event.preventDefault()} className="space-y-4">
+      <Select onValueChange={setExchange} defaultValue={exchange}>
+        <SelectTrigger>
+          <SelectValue placeholder="Select an exchange" />
+        </SelectTrigger>
+        <SelectContent>
+          {exchanges.map((exchange) => (
+            <SelectItem key={exchange.value} value={exchange.value}>
+              {exchange.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <div className="text-left">
         <Label>API Key</Label>
-        {/* TODO: Add error message */}
         <Input name="api-key" id="api-key" type="text" onChange={(event) => setApiKey(event.target.value)} />
       </div>
       <div className="text-left">
         <Label>API Secret</Label>
-        {/* TODO: Add error message */}
         <Input name="api-secret" id="api-secret" type="text" onChange={(event) => setApiSecret(event.target.value)} />
       </div>
       {/* TODO: Add isLoading for Button */}
