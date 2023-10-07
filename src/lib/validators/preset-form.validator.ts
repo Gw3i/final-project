@@ -23,8 +23,6 @@ export const DCAPresetValidator = z.object({
   interval: z.string({
     required_error: 'Please select an interval.',
   }),
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
 });
 
 export type CreateDCAPresetPayload = z.infer<typeof DCAPresetValidator>;

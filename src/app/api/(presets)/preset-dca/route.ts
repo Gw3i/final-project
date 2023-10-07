@@ -16,7 +16,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
     }
 
     const body = await request.json();
-    const { symbolPairLeft, symbolPairRight, interval, amount, startDate, endDate } = DCAPresetValidator.parse(body);
+    const { symbolPairLeft, symbolPairRight, interval, amount } = DCAPresetValidator.parse(body);
     const pairs = `${symbolPairLeft}${symbolPairRight}`;
     const symbol = pairs.toUpperCase();
     const side = 'BUY';
