@@ -75,8 +75,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
     if (error instanceof z.ZodError) {
       return new Response(error.message, { status: 422 });
     }
-
-    console.log(error);
+    
     return new Response('Could not create Connection', { status: 500 });
   }
 }

@@ -1,4 +1,4 @@
-const INTERVALS = [
+export const INTERVALS = [
   { label: '1 Hour', value: '1h' },
   { label: '12 Hours', value: '12h' },
   { label: '1 Day', value: '1d' },

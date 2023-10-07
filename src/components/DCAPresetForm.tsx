@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { FormProvider, useForm } from 'react-hook-form';
+import { INTERVALS } from '../constants/preset-dca.constants';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
@@ -24,7 +25,8 @@ const DCAPresetForm = () => {
     defaultValues: {
       amount: '',
       interval: '',
-      symbol: '',
+      symbolPairLeft: '',
+      symbolPairRight: '',
     },
     resolver: zodResolver(DCAPresetValidator),
   });
@@ -59,19 +61,35 @@ const DCAPresetForm = () => {
   return (
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="symbol"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Symbol</FormLabel>
-              <FormControl>
-                <Input placeholder="Cryptocurrency symbol" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid gap-2 grid-cols-2">
+          <FormField
+            control={form.control}
+            name="symbolPairLeft"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Coin as Symbol to buy</FormLabel>
+                <FormControl>
+                  <Input placeholder="BTC, ETH..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="symbolPairRight"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Currency as Symbol</FormLabel>
+                <FormControl>
+                  <Input placeholder="USD, USDT..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}

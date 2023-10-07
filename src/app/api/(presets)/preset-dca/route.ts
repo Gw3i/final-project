@@ -2,7 +2,7 @@ import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { DCAPresetValidator } from '@/lib/validators/preset-form.validator';
 import { FullResponse } from '@/types/binance/order.types';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
 import { decrypt, generateApiPayloadSignature } from '../../_utils/security.util';
 
@@ -15,8 +15,9 @@ export async function POST(request: NextRequest, response: NextResponse) {
     }
 
     const body = await request.json();
-    // TODO Symbol should be BTCUSDT
-    const { symbol, interval, amount, startDate, endDate } = DCAPresetValidator.parse(body);
+    const { symbolPairLeft, symbolPairRight, interval, amount, startDate, endDate } = DCAPresetValidator.parse(body);
+    const pairs = `${symbolPairLeft}${symbolPairRight}`;
+    const symbol = pairs.toUpperCase();
     const side = 'BUY';
     const timestamp = new Date().getTime();
     const quantity = amount;
@@ -38,8 +39,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
     const encryptedApiKeyWithIV = secrets.key;
     const encryptedApiSecret = secrets.secret;
     const secretKey = process.env.SECRET_KEY;
-
-    // Extract the IV from the encrypted data
     const ivHex = encryptedApiKeyWithIV.slice(0, 32);
     const iv = Buffer.from(ivHex, 'hex');
 
@@ -48,7 +47,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
     }
 
     const apiKeyEncrypted = encryptedApiKeyWithIV.slice(32); // Remove the IV from the ciphertext
-
     const apiKey = decrypt(apiKeyEncrypted, secretKey, iv);
     const apiSecret = decrypt(encryptedApiSecret, secretKey, iv);
 
@@ -72,8 +70,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
 
     // TODO: add key pair, add interval
 
-    // Make a POST request to place the order
-
     const response = await axios.post<AxiosResponse<FullResponse>>(
       `https://api.binance.com/api/v3/order/test?${queryString}&signature=${signature}`,
       null,
@@ -84,9 +80,19 @@ export async function POST(request: NextRequest, response: NextResponse) {
       },
     );
 
+    if (response.status !== 200) {
+      return new Response('An error occurred. Please try again or contact support', {
+        status: response.status,
+        statusText: response.statusText,
+      });
+    }
+
     return new Response(JSON.stringify(response.data), { status: 200, statusText: 'Order created successfully.' });
   } catch (error) {
-    console.log(error);
-    return new Response('Error');
+    if (error instanceof AxiosError) {
+      return new Response(error.message, { status: error.status });
+    }
+
+    return new Response('Could not place order. Try again or contact support');
   }
 }
