@@ -20,10 +20,9 @@ export async function POST(request: NextRequest, response: NextResponse) {
     const pairs = `${symbolPairLeft}${symbolPairRight}`;
     const symbol = pairs.toUpperCase();
     const side = 'BUY';
-    const timestamp = new Date().getTime();
     const quantity = amount;
     const type = 'MARKET';
-    const recvWindow = 5000;
+    const recvWindow = '5000';
 
     const secrets = await db.secret.findFirst({
       where: {
@@ -52,19 +51,38 @@ export async function POST(request: NextRequest, response: NextResponse) {
     const apiSecret = decrypt(encryptedApiSecret, secretKey, iv);
 
     // PLACE ORDER
-    const params: Record<string, string> = {
-      quantity,
-      recvWindow: recvWindow.toString(),
-      side,
-      symbol,
-      timestamp: timestamp.toString(),
-      type,
+
+    // Fetch Binance server time
+    const getServerTime = async () => {
+      try {
+        const response = await axios.get('https://api.binance.com/api/v3/time');
+        return response.data.serverTime;
+      } catch (error) {
+        throw new Error('Failed to fetch server time from Binance API');
+      }
     };
 
-    const queryString = `quantity=${quantity}&recvWindow=${recvWindow}&side=${side}&symbol=${symbol}&timestamp=${timestamp}&type=${type}`;
-    const signature = generateApiPayloadSignature(params, apiSecret);
+    const generateTimestamp = async () => {
+      const serverTime = await getServerTime();
+      const timestamp = serverTime + 1000; // Add a small buffer (1 second) to ensure it's within recvWindow
+      return timestamp;
+    };
 
-    const placeOrder = async (queryString: string, signature: string, apiKey: string): Promise<FullResponse> => {
+    const placeOrder = async (apiKey: string): Promise<FullResponse> => {
+      const timestamp = await generateTimestamp();
+
+      const params: Record<string, string> = {
+        quantity,
+        recvWindow,
+        side,
+        symbol,
+        timestamp,
+        type,
+      };
+
+      const queryString = `quantity=${quantity}&recvWindow=${recvWindow}&side=${side}&symbol=${symbol}&timestamp=${timestamp}&type=${type}`;
+      const signature = generateApiPayloadSignature(params, apiSecret);
+
       const response = await axios.post<AxiosResponse<FullResponse>>(
         `https://api.binance.com/api/v3/order/test?${queryString}&signature=${signature}`,
         null,
@@ -82,18 +100,26 @@ export async function POST(request: NextRequest, response: NextResponse) {
         },
       });
 
+      console.log('Order placed');
+
       return response.data.data;
     };
 
-    const order = await placeOrder(queryString, signature, apiKey);
+    const order = await placeOrder(apiKey);
 
     const selectedInterval = INTERVALS.find((intrvl) => intrvl.value === interval);
-    const scheduledTime = selectedInterval && timestamp + selectedInterval.time;
 
-    setInterval(placeOrder, scheduledTime);
+    if (!selectedInterval?.time) {
+      return new Response('Interval could not be set. Try again or contact support.', {
+        status: 400,
+      });
+    }
+
+    setInterval(() => placeOrder(apiKey), selectedInterval?.time);
 
     return new Response(JSON.stringify(order), { status: 200, statusText: 'Order created successfully.' });
   } catch (error) {
+    console.log(error);
     if (error instanceof AxiosError) {
       return new Response(error.message, { status: error.status });
     }

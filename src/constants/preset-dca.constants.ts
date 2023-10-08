@@ -1,6 +1,7 @@
 import { Interval } from '@/types/binance/order.types';
 
 export const INTERVALS: Interval[] = [
+  { label: '5 Minutes', value: '5min', time: 5 * 60 * 1000 },
   { label: '1 Hour', value: '1h', time: 60 * 60 * 1000 },
   { label: '12 Hours', value: '12h', time: 12 * 60 * 60 * 1000 },
   { label: '1 Day', value: '1d', time: 24 * 60 * 60 * 1000 },
