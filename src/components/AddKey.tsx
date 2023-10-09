@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import { MoveUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';

@@ -1,10 +1,12 @@
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { ApiKeyValidator } from '@/lib/validators/api-key.validator';
-import ccxt from 'ccxt';
+import { BinanceUserData } from '@/types/user-data/binance-user-data.types';
+import axios, { AxiosRequestConfig } from 'axios';
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { encrypt, generateApiSignature } from '../_utils/security.util';
 
 export async function POST(request: NextRequest, response: NextResponse) {
   try {
@@ -15,46 +17,49 @@ export async function POST(request: NextRequest, response: NextResponse) {
     }
 
     const body = await request.json();
-    const { apiKey, apiSecret } = ApiKeyValidator.parse(body);
-
-    // Define a secret key and an initialization vector (IV) for encryption and decryption (keep these secret!)
+    const { apiKey, apiSecret, exchange } = ApiKeyValidator.parse(body);
     const secretKey = process.env.SECRET_KEY;
 
     if (!secretKey) {
-      throw new Error('SECRET_KEY is not defined in the environment variables.');
+      throw new Error('Secret could not be retrieved.');
     }
 
-    console.log({ apiKey, apiSecret });
+    const params = {
+      timestamp: new Date().getTime(),
+    };
+    const queryString = `timestamp=${params.timestamp}`;
+    const signature = generateApiSignature(queryString, apiSecret);
 
-    // Test connection to binance
-    const exchange = new ccxt.binance({ apiKey, secret: apiSecret });
-    const requiredCredentials = exchange.requiredCredentials;
-    const hasRequiredCredentials = requiredCredentials.apiKey && requiredCredentials.secret;
+    const config: AxiosRequestConfig = {
+      method: 'get',
+      url: `https://api.binance.com/api/v3/account?${queryString}&signature=${signature}`,
+      headers: {
+        'X-MBX-APIKEY': apiKey,
+      },
+    };
 
-    console.log(hasRequiredCredentials);
+    const account = await axios<BinanceUserData>(config);
 
-    if (!hasRequiredCredentials) {
+    if (account.status !== 200) {
       return new Response('Not valid credentials. Please try again or contact support.', { status: 403 });
     }
 
-    const iv = crypto.randomBytes(16); // Generate a random IV (Initialization Vector)
+    const iv = crypto.randomBytes(16);
 
     // Encrypt the API key and API secret
-    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(secretKey), iv);
-    let encryptedApiKey = cipher.update(apiKey, 'utf-8', 'hex');
-    encryptedApiKey += cipher.final('hex');
+    const encryptedApiKey = encrypt(apiKey, secretKey, iv);
+    const encryptedApiKeyWithIV = iv.toString('hex') + encryptedApiKey;
 
     // Create a new cipher for the API secret
-    const cipher2 = crypto.createCipheriv('aes-256-cbc', Buffer.from(secretKey), iv);
-    let encryptedApiSecret = cipher2.update(apiSecret, 'utf-8', 'hex');
-    encryptedApiSecret += cipher2.final('hex');
+    const encryptedApiSecret = encrypt(apiSecret, secretKey, iv);
 
     // Store encrypted secrets in DB
     await db.secret.create({
       data: {
-        key: encryptedApiKey,
+        key: encryptedApiKeyWithIV,
         secret: encryptedApiSecret,
         userId: session.user.id,
+        exchange,
       },
     });
 
@@ -70,8 +75,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
     if (error instanceof z.ZodError) {
       return new Response(error.message, { status: 422 });
     }
-
-    console.log(error);
+    
     return new Response('Could not create Connection', { status: 500 });
   }
 }

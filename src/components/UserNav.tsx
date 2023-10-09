@@ -4,8 +4,8 @@ import { CheckCircle2, XCircle } from 'lucide-react';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { FC } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/Avatar';
-import { Button } from './ui/Button';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Button } from './ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/Dropdown-menu';
+} from './ui/dropdown-menu';
 
 export interface UserNavProps {
   session: Session;
@@ -32,7 +32,7 @@ const UserNav: FC<UserNavProps> = ({ session }) => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-8 w-8 bg-zinc-300">
             {session.user.image && <AvatarImage src={session.user.image} alt={`${session.user.name} avatar`} />}
             {!session.user.image && <AvatarFallback>$</AvatarFallback>}
           </Avatar>
