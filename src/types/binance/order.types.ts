@@ -36,3 +36,9 @@ export interface Interval {
   value: string;
   time: number;
 }
+
+export type SubscriptionCycle = 'H1' | 'H4' | 'H8' | 'H12' | 'WEEKLY' | 'DAILY' | 'MONTHLY' | 'BI_WEEKLY';
+
+export type AutoInvestPlayType = 'SINGLE' | 'PORTFOLIO' | 'INDEX';
+
+export type WeekDay = 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN';
