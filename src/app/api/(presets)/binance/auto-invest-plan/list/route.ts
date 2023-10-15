@@ -2,8 +2,50 @@ import { generateTimestamp } from '@/app/api/_utils/binance.util';
 import { decrypt, generateApiPayloadSignature } from '@/app/api/_utils/security.util';
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
-import axios from 'axios';
+import { AutoInvestPlanType, PlanStatus, SourceWallet, SubscriptionCycle, WeekDay } from '@/types/binance/order.types';
+import axios, { AxiosResponse } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
+
+export interface Plan {
+  planId: number;
+  planType: AutoInvestPlanType;
+  editAllowed: boolean;
+  creationDateTime: number;
+  firstExecutionDateTime: number; //first subscription date time
+  nextExecutionDateTime: number;
+  status: PlanStatus;
+  lastUpdatedDateTime: number;
+  targetAsset: string;
+  totalTargetAmount: string;
+  sourceAsset: string;
+  totalInvestedInUSD: string;
+  subscriptionAmount: string;
+  subscriptionCycle: SubscriptionCycle;
+  subscriptionStartDay: number | null;
+  subscriptionStartWeekday: WeekDay;
+  subscriptionStartTime: string;
+  sourceWallet: SourceWallet;
+  flexibleAllowedToUse: boolean;
+  planValueInUSD: string;
+  pnlInUSD: string;
+  roi: string;
+}
+
+export interface PlanListSingOrPortfolio {
+  planValueInUSD: string;
+  planValueInBTC: string;
+  pnlInUSD: string;
+  roi: string;
+  plans: Plan[];
+}
+
+export interface PlanListIndex {
+  planValueInUSD: string;
+  planValueInBTC: string;
+  plans: Plan[];
+}
+
+export type PlanListResponseUnion = PlanListSingOrPortfolio | PlanListIndex;
 
 export async function POST(request: NextRequest, response: NextResponse) {
   try {
@@ -41,18 +83,18 @@ export async function POST(request: NextRequest, response: NextResponse) {
 
     const getAssetList = async (apiKey: string) => {
       const timestamp = (await generateTimestamp()).toString();
-      const size = '8';
+      const planType = 'SINGLE';
 
       const params: Record<string, string> = {
         timestamp,
-        size,
+        planType,
       };
 
-      const queryString = `timestamp=${timestamp}&size=${size}`;
+      const queryString = `timestamp=${timestamp}&planType=${planType}`;
       const signature = generateApiPayloadSignature(params, apiSecret);
 
-      const response = await axios.get(
-        `https://api.binance.com/sapi/v1/lending/auto-invest/target-asset/list?${queryString}&signature=${signature}`,
+      const response = await axios.get<AxiosResponse<PlanListResponseUnion>>(
+        `https://api.binance.com/sapi/v1/lending/auto-invest/plan/list?${queryString}&signature=${signature}`,
         {
           headers: {
             'X-MBX-APIKEY': apiKey,

@@ -1,8 +1,8 @@
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { PresetAutoInvestValidator } from '@/lib/validators/preset-form.validator';
-import { AutoInvestPlayType, SubscriptionCycle, WeekDay } from '@/types/binance/order.types';
-import axios, { AxiosError } from 'axios';
+import { AutoInvestPlanType, SubscriptionCycle, WeekDay } from '@/types/binance/order.types';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
 import { decrypt, generateApiPayloadSignature } from '../../_utils/security.util';
 
@@ -15,7 +15,7 @@ export interface CreateAutoInvestPlanConfig {
   apiKey: string;
   apiSecret: string;
   targetAsset: string;
-  planType: AutoInvestPlayType;
+  planType: AutoInvestPlanType;
   subscriptionAmount: string;
   subscriptionCycle: SubscriptionCycle;
   sourceAsset: string;
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
       const signature = generateApiPayloadSignature(planDetails, apiSecret);
 
       try {
-        const response = await axios.post<Promise<AutoInvestResponse>>(
+        const response = await axios.post<AxiosResponse<AutoInvestResponse>>(
           'https://api.binance.com/sapi/v1/lending/auto-invest/plan/add',
           null,
           {
