@@ -5,6 +5,7 @@ import { DCAPresetValidator } from '@/lib/validators/preset-form.validator';
 import { FullResponse } from '@/types/binance/order.types';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
+import { generateTimestamp } from '../../_utils/binance.util';
 import { decrypt, generateApiPayloadSignature } from '../../_utils/security.util';
 
 export async function POST(request: NextRequest, response: NextResponse) {
@@ -52,24 +53,8 @@ export async function POST(request: NextRequest, response: NextResponse) {
 
     // PLACE ORDER
 
-    // Fetch Binance server time
-    const getServerTime = async () => {
-      try {
-        const response = await axios.get('https://api.binance.com/api/v3/time');
-        return response.data.serverTime;
-      } catch (error) {
-        throw new Error('Failed to fetch server time from Binance API');
-      }
-    };
-
-    const generateTimestamp = async () => {
-      const serverTime = await getServerTime();
-      const timestamp = serverTime + 1000; // Add a small buffer (1 second) to ensure it's within recvWindow
-      return timestamp;
-    };
-
     const placeOrder = async (apiKey: string): Promise<FullResponse> => {
-      const timestamp = await generateTimestamp();
+      const timestamp = (await generateTimestamp()).toString();
 
       const params: Record<string, string> = {
         quantity,
@@ -99,10 +84,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
           timestamp: new Date(),
         },
       });
-
-      console.log('Order placed');
-
-      console.log(response);
 
       return response.data.data;
     };
