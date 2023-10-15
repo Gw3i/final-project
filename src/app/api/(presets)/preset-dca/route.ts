@@ -102,6 +102,8 @@ export async function POST(request: NextRequest, response: NextResponse) {
 
       console.log('Order placed');
 
+      console.log(response);
+
       return response.data.data;
     };
 
