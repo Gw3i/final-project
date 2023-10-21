@@ -63,9 +63,11 @@ export async function POST(request: NextRequest, response: NextResponse) {
       return new Response(JSON.stringify(response.data));
     };
 
-    getAssetList(apiKey);
+    const assetList = getAssetList(apiKey);
+    return new Response(JSON.stringify(assetList), { status: 200 });
   } catch (error) {
     // TODO: Extend errors
     console.log(error);
+    return new Response(JSON.stringify(error));
   }
 }

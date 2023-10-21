@@ -109,5 +109,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
   } catch (error) {
     // TODO: Extend errors
     console.log(error);
+    return new Response(JSON.stringify(error));
   }
 }
