@@ -90,6 +90,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
       const sourceType = 'MAIN_SITE';
       const asset = JSON.stringify([{ targetAsset, percentage: 100 }]);
       const timestamp = (await generateTimestamp()).toString();
+      const subscriptionStartTime = '0';
 
       let planDetails: Record<string, string> = {
         sourceType,
@@ -100,6 +101,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
         timestamp,
         recvWindow,
         details: asset,
+        subscriptionStartTime,
       };
 
       if (subscriptionCycle === 'MONTHLY' && subscriptionStartDay) {
@@ -116,7 +118,9 @@ export async function POST(request: NextRequest, response: NextResponse) {
         };
       }
 
-      const queryString = `sourceType=${sourceType}&planType=${planType}&subscriptionAmount=${subscriptionAmount}&subscriptionCycle=${subscriptionCycle}&sourceAsset=${sourceAsset}&timestamp=${timestamp}&recvWindow=${recvWindow}&details=${asset}`;
+      console.log({ apiKey, apiSecret });
+
+      const queryString = `sourceType=${sourceType}&planType=${planType}&subscriptionAmount=${subscriptionAmount}&subscriptionCycle=${subscriptionCycle}&sourceAsset=${sourceAsset}&recvWindow=${recvWindow}&details=${asset}&subscriptionStartTime=${subscriptionStartTime}&timestamp=${timestamp}`;
 
       // Generate signature
       const signature = generateApiPayloadSignature(planDetails, apiSecret);
