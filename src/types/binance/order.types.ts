@@ -31,6 +31,18 @@ export interface FullResponse extends ResultResponse {
   fills: Fill[];
 }
 
+export interface AutoInvestAssetsResponse {
+  targetAssets: string[];
+  autoInvestAssetList: {
+    targetAsset: string;
+    roiAndDimensionTypeList: {
+      dimensionUnit: string;
+      dimensionValue: number;
+      simulateRoi: string;
+    }[];
+  }[];
+}
+
 export interface Interval {
   label: string;
   value: string;

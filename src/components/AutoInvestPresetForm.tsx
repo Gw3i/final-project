@@ -19,7 +19,11 @@ const AutoInvestPresetForm = () => {
   const [interval, setInterval] = useState<SubscriptionCycle>('MONTHLY');
   const router = useRouter();
 
-  const { mutate: createPreset, isLoading } = useMutation({
+  const {
+    mutate: createPreset,
+    isLoading,
+    data,
+  } = useMutation({
     mutationFn: async (payload: PresetAutoInvestPayload) => {
       await axios.post('/api/preset-auto-invest', payload);
     },
@@ -67,23 +71,33 @@ const AutoInvestPresetForm = () => {
         </div>
       </div>
 
-      <Label>Amount</Label>
-      <Input type="number" name="amount" placeholder="Amount" onChange={(event) => setAmount(event.target.value)} />
+      <div>
+        <Label>Amount</Label>
+        <Input
+          type="number"
+          step="any"
+          name="amount"
+          placeholder="Amount"
+          onChange={(event) => setAmount(event.target.value)}
+        />
+      </div>
 
-      <Label>Interval</Label>
-      <Select onValueChange={(value) => setInterval(value as SubscriptionCycle)}>
-        <SelectTrigger>
-          <SelectValue placeholder="Select an interval" />
-        </SelectTrigger>
+      <div>
+        <Label>Interval</Label>
+        <Select onValueChange={(value) => setInterval(value as SubscriptionCycle)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select an interval" />
+          </SelectTrigger>
 
-        <SelectContent>
-          {INTERVALS.map((interval) => (
-            <SelectItem key={interval.value} value={interval.value}>
-              {interval.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+          <SelectContent>
+            {INTERVALS.map((interval) => (
+              <SelectItem key={interval.value} value={interval.value}>
+                {interval.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
       <Button type="submit">Set Automation</Button>
     </form>

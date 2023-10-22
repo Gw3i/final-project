@@ -3,7 +3,9 @@ import { db } from '@/lib/db';
 import { PresetAutoInvestValidator } from '@/lib/validators/preset-form.validator';
 import { AutoInvestPlanType, SubscriptionCycle, WeekDay } from '@/types/binance/order.types';
 import axios, { AxiosError, AxiosResponse } from 'axios';
+import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
+import { generateTimestamp } from '../../_utils/binance.util';
 import { decrypt, generateApiPayloadSignature } from '../../_utils/security.util';
 
 export interface PortfolioDetail {
@@ -41,10 +43,12 @@ export async function POST(request: NextRequest, response: NextResponse) {
     const body = await request.json();
     const { symbol, interval, amount, subscriptionStartDay, subscriptionStartWeekday } =
       PresetAutoInvestValidator.parse(body);
+
+    // TODO: Transform dates subscriptionStartDay, subscriptionStartWeekday
     const targetAsset = symbol.toUpperCase();
     const sourceAsset = 'USDT';
     const planType = 'SINGLE';
-    const recvWindow = '5000';
+    const recvWindow = '60000';
 
     const secrets = await db.secret.findFirst({
       where: {
@@ -85,6 +89,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
     }: CreateAutoInvestPlanConfig) => {
       const sourceType = 'MAIN_SITE';
       const asset = JSON.stringify([{ targetAsset, percentage: 100 }]);
+      const timestamp = (await generateTimestamp()).toString();
 
       let planDetails: Record<string, string> = {
         sourceType,
@@ -92,6 +97,8 @@ export async function POST(request: NextRequest, response: NextResponse) {
         subscriptionAmount,
         subscriptionCycle,
         sourceAsset,
+        timestamp,
+        recvWindow,
         details: asset,
       };
 
@@ -109,23 +116,22 @@ export async function POST(request: NextRequest, response: NextResponse) {
         };
       }
 
+      const queryString = `sourceType=${sourceType}&planType=${planType}&subscriptionAmount=${subscriptionAmount}&subscriptionCycle=${subscriptionCycle}&sourceAsset=${sourceAsset}&timestamp=${timestamp}&recvWindow=${recvWindow}&details=${asset}`;
+
       // Generate signature
       const signature = generateApiPayloadSignature(planDetails, apiSecret);
+      const signtr = crypto.createHmac('sha256', apiSecret).update(queryString).digest('hex');
 
       try {
         const response = await axios.post<AxiosResponse<AutoInvestResponse>>(
-          'https://api.binance.com/sapi/v1/lending/auto-invest/plan/add',
+          `https://api.binance.com/sapi/v1/lending/auto-invest/plan/add?${queryString}&signature=${signtr}`,
           null,
           {
-            params: planDetails,
             headers: {
               'X-MBX-APIKEY': apiKey,
             },
           },
         );
-
-        // Log the response or perform other actions as needed
-        console.log(response.data);
 
         return response.data;
       } catch (error) {
@@ -147,6 +153,13 @@ export async function POST(request: NextRequest, response: NextResponse) {
       subscriptionStartDay,
       subscriptionStartWeekday,
     });
+
+    if (planResult instanceof AxiosError) {
+      return new Response(null, {
+        status: planResult.status,
+        statusText: planResult.message,
+      });
+    }
 
     return new Response(JSON.stringify(planResult), {
       status: 200,
