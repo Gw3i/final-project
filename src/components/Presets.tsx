@@ -25,17 +25,17 @@ const Presets: FC<PresetsProps> = ({ hasSecret }) => {
         className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
-        href="#"
+        href="index-invest"
       >
         <Target />
-        Buy/Sell on specific price
+        Index Invest
       </Link>
 
       <Link
         className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
-        href="#"
+        href="range"
       >
         <ArrowDownUp />
         Range Trading
@@ -45,7 +45,7 @@ const Presets: FC<PresetsProps> = ({ hasSecret }) => {
         className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
-        href="#"
+        href="/latest"
       >
         <MoveUpRight />
         Buy Latest

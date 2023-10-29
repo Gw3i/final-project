@@ -25,7 +25,7 @@ const AutoInvestPresetForm = () => {
     data,
   } = useMutation({
     mutationFn: async (payload: PresetAutoInvestPayload) => {
-      await axios.post('/api/preset-auto-invest', payload);
+      await axios.post('/api/preset-latest', payload);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
