@@ -26,6 +26,23 @@ export const DCAPresetValidator = z.object({
   }),
 });
 
+export const RangeTradingValidator = z.object({
+  symbol: z
+    .string()
+    .min(2, {
+      message: 'Symbol must be at least 2 characters.',
+    })
+    .max(5, {
+      message: 'Symbol must not be longer than 5 characters.',
+    }),
+  rangeLow: z.string({
+    required_error: 'Lowest price of sale is required.',
+  }),
+  rangeHigh: z.string({
+    required_error: 'Highest price of sale is required.',
+  }),
+});
+
 export const PresetAutoInvestValidator = z.object({
   symbol: z
     .string()
@@ -44,4 +61,5 @@ export const PresetAutoInvestValidator = z.object({
 });
 
 export type CreateDCAPresetPayload = z.infer<typeof DCAPresetValidator>;
+export type RangeTradingPresetPayload = z.infer<typeof RangeTradingValidator>;
 export type PresetAutoInvestPayload = z.infer<typeof PresetAutoInvestValidator>;

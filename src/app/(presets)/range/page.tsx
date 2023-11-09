@@ -1,3 +1,4 @@
+import RangeTradingPresetForm from '@/components/RangeTradingPresetForm';
 import { FC } from 'react';
 
 interface pageProps {}
@@ -13,6 +14,8 @@ const page: FC<pageProps> = ({}) => {
         $35,000 to $40,000. You can engage in range trading by purchasing BTC at $35,000 and selling it when it hits
         $40,000. This strategy can be repeated until stopped.
       </p>
+
+      <RangeTradingPresetForm />
     </section>
   );
 };
