@@ -31,8 +31,30 @@ export interface FullResponse extends ResultResponse {
   fills: Fill[];
 }
 
+export interface AutoInvestAssetsResponse {
+  targetAssets: string[];
+  autoInvestAssetList: {
+    targetAsset: string;
+    roiAndDimensionTypeList: {
+      dimensionUnit: string;
+      dimensionValue: number;
+      simulateRoi: string;
+    }[];
+  }[];
+}
+
 export interface Interval {
   label: string;
   value: string;
   time: number;
 }
+
+export type SubscriptionCycle = 'H1' | 'H4' | 'H8' | 'H12' | 'WEEKLY' | 'DAILY' | 'MONTHLY' | 'BI_WEEKLY';
+
+export type AutoInvestPlanType = 'SINGLE' | 'PORTFOLIO' | 'INDEX';
+
+export type WeekDay = 'MON' | 'TUE' | 'WED' | 'THU' | 'FRI' | 'SAT' | 'SUN';
+
+export type PlanStatus = 'ONGOING' | 'PAUSED' | 'REMOVED';
+
+export type SourceWallet = 'SPOT_WALLET' | 'FLEXIBLE_SAVINGS' | 'SPOT_WALLET_FLEXIBLE_SAVINGS' | 'REWARDS';

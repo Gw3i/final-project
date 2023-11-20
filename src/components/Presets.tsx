@@ -1,3 +1,5 @@
+'use client';
+
 import { ArrowDownUp, MoveUpRight, Repeat2, Target } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -13,27 +15,27 @@ const Presets: FC<PresetsProps> = ({ hasSecret }) => {
         className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
-        href="/dca"
+        href="/auto-invest"
       >
         <Repeat2 />
-        Periodically Buy
+        Auto Invest
       </Link>
 
       <Link
         className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
-        href="#"
+        href="index-invest"
       >
         <Target />
-        Buy/Sell on specific price
+        Index Invest
       </Link>
 
       <Link
         className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
-        href="#"
+        href="range"
       >
         <ArrowDownUp />
         Range Trading
@@ -43,7 +45,7 @@ const Presets: FC<PresetsProps> = ({ hasSecret }) => {
         className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
-        href="#"
+        href="/latest"
       >
         <MoveUpRight />
         Buy Latest

@@ -1,4 +1,6 @@
+import { db } from '@/lib/db';
 import crypto from 'crypto';
+import { Session } from 'next-auth';
 
 export const encrypt = (text: string, secretKey: string, iv: Buffer) => {
   const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(secretKey), iv);
@@ -24,4 +26,32 @@ export const generateApiPayloadSignature = (params: Record<string, string>, apiS
     .join('&');
 
   return crypto.createHmac('sha256', apiSecret).update(queryString).digest('hex');
+};
+
+export const getSecrets = async (session: Session) => {
+  const secrets = await db.secret.findFirst({
+    where: {
+      userId: session.user.id,
+    },
+  });
+
+  if (!secrets?.key || !secrets?.secret) {
+    return null;
+  }
+
+  const encryptedApiKeyWithIV = secrets.key;
+  const encryptedApiSecret = secrets.secret;
+  const secretKey = process.env.SECRET_KEY;
+  const ivHex = encryptedApiKeyWithIV.slice(0, 32);
+  const iv = Buffer.from(ivHex, 'hex');
+
+  if (!secretKey) {
+    throw new Error('Secret could not be retrieved.');
+  }
+
+  const apiKeyEncrypted = encryptedApiKeyWithIV.slice(32); // Remove the IV from the ciphertext
+  const apiKey = decrypt(apiKeyEncrypted, secretKey, iv);
+  const apiSecret = decrypt(encryptedApiSecret, secretKey, iv);
+
+  return { apiKey, apiSecret };
 };
