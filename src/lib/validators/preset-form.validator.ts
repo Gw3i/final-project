@@ -26,7 +26,7 @@ export const DCAPresetValidator = z.object({
   }),
 });
 
-export const RangeTradingValidator = z.object({
+export const PresetRangeTradingValidator = z.object({
   symbol: z
     .string()
     .min(2, {
@@ -61,5 +61,5 @@ export const PresetAutoInvestValidator = z.object({
 });
 
 export type CreateDCAPresetPayload = z.infer<typeof DCAPresetValidator>;
-export type RangeTradingPresetPayload = z.infer<typeof RangeTradingValidator>;
+export type RangeTradingPresetPayload = z.infer<typeof PresetRangeTradingValidator>;
 export type PresetAutoInvestPayload = z.infer<typeof PresetAutoInvestValidator>;

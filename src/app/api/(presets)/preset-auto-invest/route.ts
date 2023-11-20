@@ -118,8 +118,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
         };
       }
 
-      console.log({ apiKey, apiSecret });
-
       const queryString = `sourceType=${sourceType}&planType=${planType}&subscriptionAmount=${subscriptionAmount}&subscriptionCycle=${subscriptionCycle}&sourceAsset=${sourceAsset}&recvWindow=${recvWindow}&details=${asset}&subscriptionStartTime=${subscriptionStartTime}&timestamp=${timestamp}`;
 
       // Generate signature
