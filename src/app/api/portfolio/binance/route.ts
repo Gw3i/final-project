@@ -1,6 +1,6 @@
 import { getAuthSession } from '@/lib/auth';
 import { BinanceUserData } from '@/types/user-data/binance-user-data.types';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
 import { generateApiSignature, getSecrets } from '../../_utils/security.util';
 
@@ -38,8 +38,12 @@ export async function GET(request: NextRequest, response: NextResponse) {
 
     const account = await axios<BinanceUserData>(config);
 
-    console.log(account);
+    return new Response(JSON.stringify(account.data.balances), { status: 200 });
   } catch (error) {
     console.log(error);
+
+    if (error instanceof AxiosError) {
+      return new Response(error.message, { statusText: error.response?.statusText, status: error.response?.status });
+    }
   }
 }
