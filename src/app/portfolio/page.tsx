@@ -1,6 +1,6 @@
 'use client';
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import AssetCard from '@/components/AssetCard';
 import { toast } from '@/hooks/use-toast';
 import { Balance } from '@/types/user-data/binance-user-data.types';
 import { useMutation } from '@tanstack/react-query';
@@ -37,21 +37,8 @@ const Page: FC<PageProps> = ({}) => {
     <section className="grid max-w-xl mx-auto mt-8">
       <h2 className="text-headline-small mb-4">Portfolio</h2>
       <p className="text-zinc-500 text-sm mb-8">See all you assets in one place</p>
-      {assets &&
-        assets.map((asset) => {
-          return <p key={asset.asset}>{asset.asset}</p>;
-        })}
 
-      <Accordion type="single" collapsible className="w-full">
-        <AccordionItem value="item-1">
-          <AccordionTrigger>Binance</AccordionTrigger>
-          <AccordionContent>Binance assets table</AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="item-2">
-          <AccordionTrigger>Kraken</AccordionTrigger>
-          <AccordionContent>Empty for now</AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      <AssetCard exchangeName="Binance" assets={assets} />
     </section>
   );
 };
