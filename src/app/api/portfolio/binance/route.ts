@@ -1,8 +1,10 @@
 import { getAuthSession } from '@/lib/auth';
-import { BinanceUserData } from '@/types/user-data/binance-user-data.types';
+import { Balance } from '@/types/user-data/binance-user-data.types';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
-import { generateApiSignature, getSecrets } from '../../_utils/security.util';
+import { getServerTime } from '../../_utils/binance.util';
+import { getSecrets } from '../../_utils/security.util';
 
 export async function GET(request: NextRequest, response: NextResponse) {
   try {
@@ -22,23 +24,29 @@ export async function GET(request: NextRequest, response: NextResponse) {
 
     const { apiKey, apiSecret } = secrets;
 
-    const params = {
-      timestamp: new Date().getTime(),
+    const timestamp = await getServerTime();
+
+    const signature = (query_string: string) => {
+      return crypto.createHmac('sha256', apiSecret).update(query_string).digest('hex');
     };
-    const queryString = `timestamp=${params.timestamp}`;
-    const signature = generateApiSignature(queryString, apiSecret);
+
+    const query = `recvWindow=5000&timestamp=${timestamp}`;
+
+    const sgntr = signature(query);
 
     const config: AxiosRequestConfig = {
-      method: 'get',
-      url: `https://api.binance.com/api/v3/account?${queryString}&signature=${signature}`,
+      method: 'post',
+      url: `https://api.binance.com/sapi/v3/asset/getUserAsset?${query}&signature=${sgntr}`,
       headers: {
         'X-MBX-APIKEY': apiKey,
       },
     };
 
-    const account = await axios<BinanceUserData>(config);
+    const balances = await axios<Balance>(config);
 
-    return new Response(JSON.stringify(account.data.balances), { status: 200 });
+    console.log(balances.data);
+
+    return new Response(JSON.stringify(balances.data), { status: 200 });
   } catch (error) {
     console.log(error);
 

@@ -2,6 +2,10 @@ export interface Balance {
   asset: string;
   free: string;
   locked: string;
+  freeze: string;
+  withdrawing: string;
+  ipoable: string;
+  btcValuation: string;
 }
 
 export interface BinanceUserData {

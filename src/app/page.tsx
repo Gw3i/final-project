@@ -12,6 +12,7 @@ export default async function Home() {
       <h1 className="text-headline-medium text-center">HOME</h1>
 
       {!session?.user.hasSecret && <AddKey />}
+      <AddKey />
 
       <section>
         <h2 className="text-headline-small mb-4">Presets</h2>

@@ -2,16 +2,21 @@
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { toast } from '@/hooks/use-toast';
+import { Balance } from '@/types/user-data/binance-user-data.types';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 interface PageProps {}
 
 const Page: FC<PageProps> = ({}) => {
-  const { mutate: getBalance, isLoading } = useMutation({
+  const [assets, setAssets] = useState<Balance[]>([]);
+
+  const { mutate: getAssets, isLoading } = useMutation({
     mutationFn: async () => {
-      await axios.get('/api/portfolio/binance');
+      const data = await axios.get<Balance[]>('/api/portfolio/binance');
+
+      setAssets(data.data);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -22,23 +27,20 @@ const Page: FC<PageProps> = ({}) => {
         });
       }
     },
-    onSuccess: () => {
-      //   return toast({
-      //     title: 'Connection created successfully!',
-      //     description: 'The connection was successfully created.',
-      //     variant: 'default',
-      //   });
-    },
   });
 
   useEffect(() => {
-    getBalance();
+    getAssets();
   }, []);
 
   return (
     <section className="grid max-w-xl mx-auto mt-8">
       <h2 className="text-headline-small mb-4">Portfolio</h2>
       <p className="text-zinc-500 text-sm mb-8">See all you assets in one place</p>
+      {assets &&
+        assets.map((asset) => {
+          return <p key={asset.asset}>{asset.asset}</p>;
+        })}
 
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="item-1">
