@@ -38,7 +38,7 @@ const Page: FC<PageProps> = ({}) => {
       <h2 className="text-headline-small mb-4">Portfolio</h2>
       <p className="text-zinc-500 text-sm mb-8">See all you assets in one place</p>
 
-      <AssetCard exchangeName="Binance" assets={assets} />
+      <AssetCard exchangeName="Binance" assets={assets} isLoading={isLoading} />
     </section>
   );
 };
