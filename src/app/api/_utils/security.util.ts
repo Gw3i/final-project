@@ -1,4 +1,5 @@
 import { db } from '@/lib/db';
+import { Exchange } from '@/types/exchanges/exchange';
 import crypto from 'crypto';
 import { Session } from 'next-auth';
 
@@ -28,10 +29,11 @@ export const generateApiPayloadSignature = (params: Record<string, string>, apiS
   return crypto.createHmac('sha256', apiSecret).update(queryString).digest('hex');
 };
 
-export const getSecrets = async (session: Session) => {
+export const getSecrets = async (session: Session, exchange: Exchange) => {
   const secrets = await db.secret.findFirst({
     where: {
       userId: session.user.id,
+      exchange,
     },
   });
 

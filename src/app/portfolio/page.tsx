@@ -10,13 +10,31 @@ import { FC, useEffect, useState } from 'react';
 interface PageProps {}
 
 const Page: FC<PageProps> = ({}) => {
-  const [assets, setAssets] = useState<Balance[]>([]);
+  const [binanceAssets, setBinanceAssets] = useState<Balance[]>([]);
+  const [krakenAssets, setKrakenAssets] = useState<KrakenBalanceResponse | null>(null);
 
-  const { mutate: getAssets, isLoading } = useMutation({
+  const { mutate: getBinanceAssets, isLoading: isBinanceAssetsLoading } = useMutation({
     mutationFn: async () => {
       const data = await axios.get<Balance[]>('/api/portfolio/binance');
 
-      setAssets(data.data);
+      setBinanceAssets(data.data);
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        return toast({
+          title: error.message,
+          description: error.response?.data,
+          variant: 'destructive',
+        });
+      }
+    },
+  });
+
+  const { mutate: getKrakenAssets, isLoading: isKrakenAssetsLoading } = useMutation({
+    mutationFn: async () => {
+      const data = await axios.get<KrakenBalanceResponse>('/api/portfolio/kraken');
+
+      setKrakenAssets(data.data);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -30,7 +48,8 @@ const Page: FC<PageProps> = ({}) => {
   });
 
   useEffect(() => {
-    getAssets();
+    getBinanceAssets();
+    // getKrakenAssets();
   }, []);
 
   return (
@@ -38,7 +57,7 @@ const Page: FC<PageProps> = ({}) => {
       <h2 className="text-headline-small mb-4">Portfolio</h2>
       <p className="text-zinc-500 text-sm mb-8">See all you assets in one place</p>
 
-      <AssetCard exchangeName="Binance" assets={assets} isLoading={isLoading} />
+      <AssetCard exchangeName="Binance" assets={binanceAssets} isLoading={isBinanceAssetsLoading} />
     </section>
   );
 };

@@ -11,7 +11,7 @@ interface AssetCardProps {
 const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading }) => {
   return (
     <article className="bg-slate-100 rounded-lg p-4">
-      <p className="uppercase font-semibold mb-4">{exchangeName}</p>
+      <p className="uppercase font-semibold mb-4 text-2xl">{exchangeName}</p>
 
       {isLoading && <p>LOADING...</p>}
 

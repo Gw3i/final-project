@@ -13,7 +13,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
       return new Response('Unauthorized', { status: 401 });
     }
 
-    const secrets = await getSecrets(session);
+    const secrets = await getSecrets(session, 'binance');
 
     if (!secrets) {
       return new Response('No API Key or Secret found. Please add API Key and API Secret or contact support', {
