@@ -1,6 +1,3 @@
-type KrakenBalanceResponse = {
-  error: string[];
-  result: {
-    [key: string]: string;
-  };
+type KrakenBalance = {
+  [key: string]: string;
 };

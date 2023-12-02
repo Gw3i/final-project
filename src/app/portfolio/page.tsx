@@ -11,9 +11,9 @@ interface PageProps {}
 
 const Page: FC<PageProps> = ({}) => {
   const [binanceAssets, setBinanceAssets] = useState<Balance[]>([]);
-  const [krakenAssets, setKrakenAssets] = useState<KrakenBalanceResponse | null>(null);
+  const [krakenAssets, setKrakenAssets] = useState<KrakenBalance | null>(null);
 
-  const { mutate: getBinanceAssets, isLoading: isBinanceAssetsLoading } = useMutation({
+  const { mutate: getBinanceAssets, isLoading } = useMutation({
     mutationFn: async () => {
       const data = await axios.get<Balance[]>('/api/portfolio/binance');
 
@@ -32,9 +32,9 @@ const Page: FC<PageProps> = ({}) => {
 
   const { mutate: getKrakenAssets, isLoading: isKrakenAssetsLoading } = useMutation({
     mutationFn: async () => {
-      const data = await axios.get<KrakenBalanceResponse>('/api/portfolio/kraken');
+      const data = await axios.get('/api/portfolio/kraken');
 
-      setKrakenAssets(data.data);
+      console.log(data);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -49,7 +49,7 @@ const Page: FC<PageProps> = ({}) => {
 
   useEffect(() => {
     getBinanceAssets();
-    // getKrakenAssets();
+    getKrakenAssets();
   }, []);
 
   return (
@@ -57,7 +57,7 @@ const Page: FC<PageProps> = ({}) => {
       <h2 className="text-headline-small mb-4">Portfolio</h2>
       <p className="text-zinc-500 text-sm mb-8">See all you assets in one place</p>
 
-      <AssetCard exchangeName="Binance" assets={binanceAssets} isLoading={isBinanceAssetsLoading} />
+      <AssetCard exchangeName="Binance" assets={binanceAssets} isLoading={isLoading} />
     </section>
   );
 };

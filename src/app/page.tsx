@@ -11,7 +11,7 @@ export default async function Home() {
     <div className="grid gap-8 mt-8">
       <h1 className="text-headline-medium text-center">HOME</h1>
 
-      {!session?.user.hasSecret && <AddKey />}
+      {/* {!session?.user.hasSecret && <AddKey />} */}
       <AddKey />
 
       <section>
