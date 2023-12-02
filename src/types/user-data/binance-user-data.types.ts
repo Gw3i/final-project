@@ -1,4 +1,4 @@
-export interface Balance {
+export interface BinanceBalance {
   asset: string;
   free: string;
   locked: string;
@@ -27,7 +27,7 @@ export interface BinanceUserData {
   preventSor: boolean;
   updateTime: number;
   accountType: string;
-  balances: Balance[];
+  balances: BinanceBalance[];
   permissions: string[];
   uid: number;
 }

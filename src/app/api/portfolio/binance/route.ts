@@ -1,5 +1,5 @@
 import { getAuthSession } from '@/lib/auth';
-import { Balance } from '@/types/user-data/binance-user-data.types';
+import { BinanceBalance } from '@/types/user-data/binance-user-data.types';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerTime } from '../../_utils/binance.util';
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
       },
     };
 
-    const balances = await axios<Balance>(axiosRequestConfig);
+    const balances = await axios<BinanceBalance>(axiosRequestConfig);
 
     return new Response(JSON.stringify(balances.data), { status: 200 });
   } catch (error) {

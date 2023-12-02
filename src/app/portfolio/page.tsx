@@ -2,7 +2,8 @@
 
 import AssetCard from '@/components/AssetCard';
 import { toast } from '@/hooks/use-toast';
-import { Balance } from '@/types/user-data/binance-user-data.types';
+import { BinanceBalance } from '@/types/user-data/binance-user-data.types';
+import { KrakenSortedBalance } from '@/types/user-data/kraken-user-data.types';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { FC, useEffect, useState } from 'react';
@@ -10,12 +11,12 @@ import { FC, useEffect, useState } from 'react';
 interface PageProps {}
 
 const Page: FC<PageProps> = ({}) => {
-  const [binanceAssets, setBinanceAssets] = useState<Balance[]>([]);
-  const [krakenAssets, setKrakenAssets] = useState<KrakenBalance | null>(null);
+  const [binanceAssets, setBinanceAssets] = useState<BinanceBalance[]>([]);
+  const [krakenAssets, setKrakenAssets] = useState<KrakenSortedBalance | null>(null);
 
   const { mutate: getBinanceAssets, isLoading } = useMutation({
     mutationFn: async () => {
-      const data = await axios.get<Balance[]>('/api/portfolio/binance');
+      const data = await axios.get<BinanceBalance[]>('/api/portfolio/binance');
 
       setBinanceAssets(data.data);
     },
@@ -32,9 +33,9 @@ const Page: FC<PageProps> = ({}) => {
 
   const { mutate: getKrakenAssets, isLoading: isKrakenAssetsLoading } = useMutation({
     mutationFn: async () => {
-      const data = await axios.get('/api/portfolio/kraken');
+      const data = await axios.get<KrakenSortedBalance>('/api/portfolio/kraken');
 
-      console.log(data);
+      setKrakenAssets(data.data);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -57,7 +58,10 @@ const Page: FC<PageProps> = ({}) => {
       <h2 className="text-headline-small mb-4">Portfolio</h2>
       <p className="text-zinc-500 text-sm mb-8">See all you assets in one place</p>
 
-      <AssetCard exchangeName="Binance" assets={binanceAssets} isLoading={isLoading} />
+      <div className="grid gap-4">
+        <AssetCard exchangeName="Binance" assets={binanceAssets} isLoading={isLoading} />
+        <AssetCard exchangeName="Kraken" assets={krakenAssets?.freeAssets ?? []} isLoading={isKrakenAssetsLoading} />
+      </div>
     </section>
   );
 };

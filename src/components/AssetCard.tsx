@@ -1,21 +1,25 @@
-import { Balance } from '@/types/user-data/binance-user-data.types';
+import { normalizeBalance } from '@/lib/utils/balance.util';
+import { BinanceBalance } from '@/types/user-data/binance-user-data.types';
+import { KrakenBalance } from '@/types/user-data/kraken-user-data.types';
 import { FC } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
 
 interface AssetCardProps {
   exchangeName: string;
-  assets: Balance[];
+  assets: BinanceBalance[] | KrakenBalance[];
   isLoading: boolean;
 }
 
 const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading }) => {
+  const assetList = normalizeBalance(assets);
+
   return (
     <article className="bg-slate-100 rounded-lg p-4">
       <p className="uppercase font-semibold mb-4 text-2xl">{exchangeName}</p>
 
       {isLoading && <p>LOADING...</p>}
 
-      {assets && !isLoading && (
+      {assetList.length > 1 && !isLoading && (
         <Table>
           <TableHeader>
             <TableRow>
@@ -25,14 +29,14 @@ const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {assets.map((asset) => (
-              <TableRow key={asset.asset}>
-                <TableCell className="font-medium ">{asset.asset}</TableCell>
-                <TableCell className="text-right">$ {asset.btcValuation}</TableCell>
+            {assetList.map((asset) => (
+              <TableRow key={asset.name}>
+                <TableCell className="font-medium ">{asset.name}</TableCell>
+                <TableCell className="text-right">$ </TableCell>
                 <TableCell className="text-right">
-                  <p className="font-semibold">$ {Number(asset.free) * Number(asset.btcValuation)}</p>
+                  <p className="font-semibold">$</p>
                   <p>
-                    {asset.free} {asset.asset}
+                    {asset.value} {asset.name}
                   </p>
                 </TableCell>
               </TableRow>
