@@ -39,12 +39,8 @@ const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading }) => {
                     </TableCell>
                     <TableCell className="text-right">
                       {/* TODO: Convert values and prices into integers */}
-                      {/* TODO: Calculate price in BE */}
-                      {asset.currentPrice && (
-                        <p className="font-semibold">
-                          $ {(Number(asset.value) * Number(asset.currentPrice)).toFixed(10)}
-                        </p>
-                      )}
+                      {/* TODO: Trim total when something like 30.05000000000000 */}
+                      {asset.totalPrice && <p className="font-semibold">$ {asset.totalPrice.toFixed(13)}</p>}
                       <p>
                         {asset.value} {asset.name}
                       </p>

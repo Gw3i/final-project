@@ -11,6 +11,7 @@ export interface KrakenBalanceWithCurrentPrice {
   name: string;
   value: string;
   currentPrice: string | null;
+  totalPrice: number | null;
   isStaked: boolean;
 }
 

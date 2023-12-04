@@ -95,8 +95,9 @@ export async function GET(request: NextRequest, response: NextResponse) {
           const data = await kraken.ticker({ pair });
 
           const currentPrice = data[pair]?.o ?? null;
+          const totalPrice = currentPrice ? Number(asset.value) * Number(currentPrice) : null;
 
-          return { name: assetName, value: asset.value, currentPrice, isStaked };
+          return { name: assetName, value: asset.value, currentPrice, isStaked, totalPrice };
         }),
       );
 
@@ -118,7 +119,8 @@ export async function GET(request: NextRequest, response: NextResponse) {
       }
     }
 
-    //TODO: Add sortBy and sortOrder
+    //TODO: Add sortBy, sortOrder, limit
+    //TODO: Calculate total price value (owned assets * currentPrice)
 
     const finalAssets: KrakenSortedBalance = { freeAssets, stackedAssets };
 
