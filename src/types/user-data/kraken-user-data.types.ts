@@ -7,7 +7,14 @@ export interface KrakenBalance {
   value: string;
 }
 
+export interface KrakenBalanceWithCurrentPrice {
+  name: string;
+  value: string;
+  currentPrice: string | null;
+  isStaked: boolean;
+}
+
 export interface KrakenSortedBalance {
-  freeAssets: KrakenBalance[];
-  stackedAssets: KrakenBalance[];
+  freeAssets: KrakenBalanceWithCurrentPrice[];
+  stackedAssets: KrakenBalanceWithCurrentPrice[];
 }
