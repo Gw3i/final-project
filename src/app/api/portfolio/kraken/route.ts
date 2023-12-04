@@ -8,6 +8,7 @@ import {
 import { NextRequest, NextResponse } from 'next/server';
 import { Kraken } from 'node-kraken-api';
 import { STACKED_ASSETS_ENDING } from '../../_constants/kraken.constants';
+import { normalizeKrakenPairs } from '../../_utils/kraken-special-pairs.util';
 import { getSecrets } from '../../_utils/security.util';
 
 interface KrakenTickerResponse {
@@ -74,7 +75,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
       }));
 
       const currency = 'USD';
-      const assetsWithTicker: KrakenBalanceWithCurrentPrice[] = await Promise.all(
+      const assetsWithTicker: Array<KrakenBalanceWithCurrentPrice | null> = await Promise.all(
         krakenBalance.map(async (asset) => {
           let assetName = asset.name;
           let isStaked = false;
@@ -92,9 +93,11 @@ export async function GET(request: NextRequest, response: NextResponse) {
           }
 
           const pair = assetName + currency;
-          const data = await kraken.ticker({ pair });
+          const normalizedPair = normalizeKrakenPairs(pair);
 
-          const currentPrice = data[pair]?.o ?? null;
+          const data = await kraken.ticker({ pair });
+          const currentPrice = data[normalizedPair ?? pair]?.o ?? null;
+
           const totalPrice = currentPrice ? Number(asset.value) * Number(currentPrice) : null;
 
           return { name: assetName, value: asset.value, currentPrice, isStaked, totalPrice };
@@ -112,6 +115,8 @@ export async function GET(request: NextRequest, response: NextResponse) {
     for (let i = 0; i < balanceWithTicker.length; i++) {
       const asset = balanceWithTicker[i];
 
+      if (!asset) return;
+
       if (asset.isStaked) {
         stackedAssets.push(asset);
       } else {
@@ -124,11 +129,9 @@ export async function GET(request: NextRequest, response: NextResponse) {
 
     const finalAssets: KrakenSortedBalance = { freeAssets, stackedAssets };
 
-    const data = await kraken.ticker({ pair: 'ETHUSD' });
-    console.log(data);
-
     return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {
+    // TODO: Enhance error messages
     console.error('Internal Server Error:', error);
     return new Response('Internal Server Error', { status: 500, statusText: JSON.stringify(error) });
   }
