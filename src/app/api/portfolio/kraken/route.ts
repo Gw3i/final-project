@@ -125,7 +125,8 @@ export async function GET(request: NextRequest, response: NextResponse) {
     }
 
     //TODO: Add sortBy, sortOrder, limit
-    //TODO: Calculate total price value (owned assets * currentPrice)
+    // const searchParams = request.nextUrl.searchParams;
+    // const query = searchParams.get('limit');
 
     const finalAssets: KrakenSortedBalance = { freeAssets, stackedAssets };
 

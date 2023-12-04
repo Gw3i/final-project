@@ -33,7 +33,7 @@ const Page: FC<PageProps> = ({}) => {
 
   const { mutate: getKrakenAssets, isLoading: isKrakenAssetsLoading } = useMutation({
     mutationFn: async () => {
-      const data = await axios.get<KrakenSortedBalance>('/api/portfolio/kraken');
+      const data = await axios.get<KrakenSortedBalance>('/api/portfolio/kraken?sortBy=value');
 
       setKrakenAssets(data.data);
     },
