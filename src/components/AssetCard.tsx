@@ -1,21 +1,29 @@
 import { normalizeBalance } from '@/lib/utils/balance.util';
-import { BinanceBalance } from '@/types/user-data/binance-user-data.types';
+import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
 import { KrakenBalanceWithCurrentPrice } from '@/types/user-data/kraken-user-data.types';
 import { FC } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
 
 interface AssetCardProps {
   exchangeName: string;
-  assets: BinanceBalance[] | KrakenBalanceWithCurrentPrice[];
+  assets: NormalizedBalanceWithCurrentPrice[];
   isLoading: boolean;
 }
 
 const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading }) => {
   const assetList = normalizeBalance(assets);
 
+  const total = assetList.reduce(
+    (previous: number, current: KrakenBalanceWithCurrentPrice) => previous + (Number(current.totalPrice) || 0),
+    0,
+  );
+
   return (
-    <article className="bg-slate-100 rounded-lg p-4">
-      <p className="uppercase font-semibold mb-4 text-2xl">{exchangeName}</p>
+    <article className="bg-slate-100 rounded-lg py-6 px-4">
+      <div className="flex justify-between items-center uppercase font-semibold mb-4 text-2xl">
+        <p>{exchangeName}</p>
+        <p>${total.toFixed(2)}</p>
+      </div>
 
       {isLoading && <p>LOADING...</p>}
 
@@ -35,12 +43,12 @@ const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading }) => {
                   <TableRow key={asset.name}>
                     <TableCell className="font-medium ">{asset.name}</TableCell>
                     <TableCell className="text-right">
-                      <p>$ {asset.currentPrice ?? 'Not found'}</p>{' '}
+                      <p>${asset.currentPrice ? Number(asset.currentPrice).toFixed(5) : 'Not found'}</p>{' '}
                     </TableCell>
                     <TableCell className="text-right">
                       {/* TODO: Convert values and prices into integers */}
                       {/* TODO: Trim total when something like 30.05000000000000 */}
-                      {asset.totalPrice && <p className="font-semibold">$ {asset.totalPrice.toFixed(13)}</p>}
+                      {asset.totalPrice && <p className="font-semibold">${asset.totalPrice.toFixed(2)}</p>}
                       <p>
                         {asset.value} {asset.name}
                       </p>
