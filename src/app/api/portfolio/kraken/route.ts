@@ -128,6 +128,8 @@ export async function GET(request: NextRequest, response: NextResponse) {
     // const searchParams = request.nextUrl.searchParams;
     // const query = searchParams.get('limit');
 
+    // TODO: Create paginated response
+
     const finalAssets: KrakenSortedBalance = { freeAssets, stackedAssets };
 
     return new Response(JSON.stringify(finalAssets), { status: 200 });

@@ -2,7 +2,7 @@
 
 import AssetCard from '@/components/AssetCard';
 import { toast } from '@/hooks/use-toast';
-import { BinanceBalance } from '@/types/user-data/binance-user-data.types';
+import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
 import { KrakenSortedBalance } from '@/types/user-data/kraken-user-data.types';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
@@ -11,12 +11,12 @@ import { FC, useEffect, useState } from 'react';
 interface PageProps {}
 
 const Page: FC<PageProps> = ({}) => {
-  const [binanceAssets, setBinanceAssets] = useState<BinanceBalance[]>([]);
+  const [binanceAssets, setBinanceAssets] = useState<NormalizedBalanceWithCurrentPrice[]>([]);
   const [krakenAssets, setKrakenAssets] = useState<KrakenSortedBalance | null>(null);
 
   const { mutate: getBinanceAssets, isLoading } = useMutation({
     mutationFn: async () => {
-      const data = await axios.get<BinanceBalance[]>('/api/portfolio/binance');
+      const data = await axios.get<NormalizedBalanceWithCurrentPrice[]>('/api/portfolio/binance');
 
       setBinanceAssets(data.data);
     },
