@@ -1,7 +1,11 @@
-export interface Balance {
+export interface BinanceBalance {
   asset: string;
   free: string;
   locked: string;
+  freeze: string;
+  withdrawing: string;
+  ipoable: string;
+  btcValuation: string;
 }
 
 export interface BinanceUserData {
@@ -23,7 +27,7 @@ export interface BinanceUserData {
   preventSor: boolean;
   updateTime: number;
   accountType: string;
-  balances: Balance[];
+  balances: BinanceBalance[];
   permissions: string[];
   uid: number;
 }

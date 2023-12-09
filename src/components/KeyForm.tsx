@@ -2,6 +2,7 @@
 
 import { toast } from '@/hooks/use-toast';
 import { CreateApiKeyPayload } from '@/lib/validators/api-key.validator';
+import { Exchange } from '@/types/exchanges/exchange';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
@@ -12,13 +13,21 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
+interface Exchanges {
+  label: string;
+  value: Exchange;
+}
+
 const KeyForm = () => {
   const [exchange, setExchange] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [apiSecret, setApiSecret] = useState('');
   const router = useRouter();
 
-  const exchanges = [{ label: 'Binance', value: 'binance' }];
+  const exchanges: Exchanges[] = [
+    { label: 'Binance', value: 'binance' },
+    { label: 'Kraken', value: 'kraken' },
+  ];
 
   const { mutate: setupConnection, isLoading } = useMutation({
     mutationFn: async () => {
