@@ -1,0 +1,9 @@
+export const QUERY_PARAMS_LIMIT = 'limit';
+export const QUERY_PARAMS_PAGE = 'page';
+export const QUERY_PARAMS_STAKED = 'staked';
+export const QUERY_PARAMS_SORT_ORDER = 'sortOrder';
+export const QUERY_PARAMS_SORT_ORDER_ASC = 'asc';
+export const QUERY_PARAMS_SORT_ORDER_DESC = 'desc';
+export const QUERY_PARAMS_SORT_BY = 'sortBy';
+export const QUERY_PARAMS_SORT_BY_NAME = 'name';
+export const QUERY_PARAMS_SORT_BY_VALUE = 'value';

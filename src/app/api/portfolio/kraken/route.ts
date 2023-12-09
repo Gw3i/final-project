@@ -1,36 +1,32 @@
+import {
+  QUERY_PARAMS_LIMIT,
+  QUERY_PARAMS_PAGE,
+  QUERY_PARAMS_SORT_BY,
+  QUERY_PARAMS_SORT_BY_VALUE,
+  QUERY_PARAMS_SORT_ORDER_ASC,
+  QUERY_PARAMS_STAKED,
+} from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
+import { QueryParamsValidator } from '@/lib/validators/query-params.validator';
 import {
   KrakenBalance,
   KrakenBalanceResponse,
   KrakenBalanceWithCurrentPrice,
-  KrakenSortedBalance,
 } from '@/types/user-data/kraken-user-data.types';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { Kraken } from 'node-kraken-api';
 import { STACKED_ASSETS_ENDING } from '../../_constants/kraken.constants';
 import { normalizeKrakenPairs } from '../../_utils/kraken-special-pairs.util';
 import { getSecrets } from '../../_utils/security.util';
-
-interface KrakenTickerResponse {
-  [key: string]: {
-    a: string[] | null;
-    b: string[] | null;
-    c: string[] | null;
-    v: string[] | null;
-    p: string[] | null;
-    t: string[] | null;
-    l: string[] | null;
-    h: string[] | null;
-    o: string;
-  };
-}
 
 interface KrakenSymbolWithName {
   krakenSymbol: string;
   altName: string | null;
 }
 
-export async function GET(request: NextRequest, response: NextResponse) {
+export async function GET(request: NextRequest) {
+  const url = new URL(request.url);
+
   try {
     const session = await getAuthSession();
 
@@ -45,6 +41,14 @@ export async function GET(request: NextRequest, response: NextResponse) {
         status: 404,
       });
     }
+
+    const { limit, page, sortBy, staked, sortOrder } = QueryParamsValidator.parse({
+      limit: url.searchParams.get(QUERY_PARAMS_LIMIT),
+      page: url.searchParams.get(QUERY_PARAMS_PAGE),
+      sortBy: url.searchParams.get(QUERY_PARAMS_SORT_BY),
+      sortOrder: url.searchParams.get(QUERY_PARAMS_SORT_BY),
+      staked: url.searchParams.get(QUERY_PARAMS_STAKED),
+    });
 
     const { apiKey, apiSecret } = secrets;
 
@@ -109,8 +113,8 @@ export async function GET(request: NextRequest, response: NextResponse) {
 
     const balanceWithTicker = await getTickerForOwnedAssets();
 
-    const freeAssets: KrakenBalanceWithCurrentPrice[] = [];
-    const stackedAssets: KrakenBalanceWithCurrentPrice[] = [];
+    let freeAssets: KrakenBalanceWithCurrentPrice[] = [];
+    let stackedAssets: KrakenBalanceWithCurrentPrice[] = [];
 
     for (let i = 0; i < balanceWithTicker.length; i++) {
       const asset = balanceWithTicker[i];
@@ -124,13 +128,32 @@ export async function GET(request: NextRequest, response: NextResponse) {
       }
     }
 
-    //TODO: Add sortBy, sortOrder, limit
-    // const searchParams = request.nextUrl.searchParams;
-    // const query = searchParams.get('limit');
+    if (sortBy === QUERY_PARAMS_SORT_BY_VALUE) {
+      freeAssets.sort((a, b) => {
+        if (!a.totalPrice || !b.totalPrice) return 0;
 
-    // TODO: Create paginated response
+        if (sortOrder === QUERY_PARAMS_SORT_ORDER_ASC) {
+          return a.totalPrice - b.totalPrice;
+        } else {
+          return b.totalPrice - a.totalPrice;
+        }
+      });
+    }
 
-    const finalAssets: KrakenSortedBalance = { freeAssets, stackedAssets };
+    if (page && limit) {
+      const startIndex = (parseInt(page) - 1) * parseInt(limit);
+      const endIndex = parseInt(page) * parseInt(limit);
+
+      freeAssets = freeAssets.slice(startIndex, endIndex);
+    }
+
+    let finalAssets: KrakenBalanceWithCurrentPrice[] = [];
+
+    if (staked) {
+      finalAssets = stackedAssets;
+    } else {
+      finalAssets = freeAssets;
+    }
 
     return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {

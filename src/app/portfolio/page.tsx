@@ -4,7 +4,7 @@ import AssetCard from '@/components/AssetCard';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
-import { KrakenSortedBalance } from '@/types/user-data/kraken-user-data.types';
+import { KrakenBalanceWithCurrentPrice } from '@/types/user-data/kraken-user-data.types';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
@@ -14,7 +14,7 @@ interface PageProps {}
 
 const Page: FC<PageProps> = ({}) => {
   const [binanceAssets, setBinanceAssets] = useState<NormalizedBalanceWithCurrentPrice[]>([]);
-  const [krakenAssets, setKrakenAssets] = useState<KrakenSortedBalance | null>(null);
+  const [krakenAssets, setKrakenAssets] = useState<KrakenBalanceWithCurrentPrice[]>([]);
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [totalBalance, setTotalBalance] = useState(0);
 
@@ -37,7 +37,9 @@ const Page: FC<PageProps> = ({}) => {
 
   const { mutate: getKrakenAssets, isLoading: isKrakenAssetsLoading } = useMutation({
     mutationFn: async () => {
-      const data = await axios.get<KrakenSortedBalance>('/api/portfolio/kraken?sortBy=value');
+      const data = await axios.get<KrakenBalanceWithCurrentPrice[]>(
+        '/api/portfolio/kraken?page=1&limit=5&sortBy=value&sortOrder=desc',
+      );
 
       setKrakenAssets(data.data);
     },
@@ -90,7 +92,7 @@ const Page: FC<PageProps> = ({}) => {
         />
         <AssetCard
           exchangeName="Kraken"
-          assets={krakenAssets?.freeAssets ?? []}
+          assets={krakenAssets ?? []}
           isLoading={isKrakenAssetsLoading}
           isBalanceVisible={isBalanceVisible}
           handleTotalBalance={getTotal}
