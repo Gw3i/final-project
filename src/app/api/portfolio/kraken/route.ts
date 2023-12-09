@@ -1,13 +1,5 @@
-import {
-  QUERY_PARAMS_LIMIT,
-  QUERY_PARAMS_PAGE,
-  QUERY_PARAMS_SORT_BY,
-  QUERY_PARAMS_SORT_BY_VALUE,
-  QUERY_PARAMS_SORT_ORDER_ASC,
-  QUERY_PARAMS_STAKED,
-} from '@/constants/query-params.constants';
+import { QUERY_PARAMS_SORT_BY_VALUE, QUERY_PARAMS_SORT_ORDER_ASC } from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
-import { QueryParamsValidator } from '@/lib/validators/query-params.validator';
 import {
   KrakenBalance,
   KrakenBalanceResponse,
@@ -16,6 +8,7 @@ import {
 import { NextRequest } from 'next/server';
 import { Kraken } from 'node-kraken-api';
 import { STACKED_ASSETS_ENDING } from '../../_constants/kraken.constants';
+import { getQueryParams } from '../../_utils';
 import { normalizeKrakenPairs } from '../../_utils/kraken-special-pairs.util';
 import { getSecrets } from '../../_utils/security.util';
 
@@ -42,13 +35,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const { limit, page, sortBy, staked, sortOrder } = QueryParamsValidator.parse({
-      limit: url.searchParams.get(QUERY_PARAMS_LIMIT),
-      page: url.searchParams.get(QUERY_PARAMS_PAGE),
-      sortBy: url.searchParams.get(QUERY_PARAMS_SORT_BY),
-      sortOrder: url.searchParams.get(QUERY_PARAMS_SORT_BY),
-      staked: url.searchParams.get(QUERY_PARAMS_STAKED),
-    });
+    const { limit, page, sortBy, staked, sortOrder } = getQueryParams(url);
 
     const { apiKey, apiSecret } = secrets;
 

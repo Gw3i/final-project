@@ -20,7 +20,9 @@ const Page: FC<PageProps> = ({}) => {
 
   const { mutate: getBinanceAssets, isLoading } = useMutation({
     mutationFn: async () => {
-      const data = await axios.get<NormalizedBalanceWithCurrentPrice[]>('/api/portfolio/binance');
+      const data = await axios.get<NormalizedBalanceWithCurrentPrice[]>(
+        '/api/portfolio/binance?page=1&limit=5&sortBy=value&sortOrder=desc',
+      );
 
       setBinanceAssets(data.data);
     },

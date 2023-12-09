@@ -1,14 +1,18 @@
 import { BINANCE_24H_TICKER_URL, BINANCE_API_BASE_URL } from '@/constants/binance.constants';
+import { QUERY_PARAMS_SORT_BY_VALUE, QUERY_PARAMS_SORT_ORDER_ASC } from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
 import { TickerFull } from '@/types/coins/ticker.types';
 import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
 import { BinanceBalance } from '@/types/user-data/binance-user-data.types';
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { NextRequest } from 'next/server';
+import { getQueryParams } from '../../_utils';
 import { getServerTime } from '../../_utils/binance.util';
 import { generateApiSignature, getSecrets } from '../../_utils/security.util';
 
 export async function GET(request: NextRequest) {
+  const url = new URL(request.url);
+
   try {
     const session = await getAuthSession();
 
@@ -25,6 +29,8 @@ export async function GET(request: NextRequest) {
     }
 
     const { apiKey, apiSecret } = secrets;
+
+    const { limit, page, sortBy, staked, sortOrder } = getQueryParams(url);
 
     const timestamp = await getServerTime();
     const recvWindow = '5000';
@@ -85,11 +91,26 @@ export async function GET(request: NextRequest) {
       return assetsWithTicker;
     };
 
-    const assetsWithTicker = await getTickerForOwnedAssets();
+    let assetsWithTicker = await getTickerForOwnedAssets();
 
-    //TODO: Add sortBy, sortOrder, limit
-    // const searchParams = request.nextUrl.searchParams;
-    // const query = searchParams.get('limit');
+    if (sortBy === QUERY_PARAMS_SORT_BY_VALUE) {
+      assetsWithTicker.sort((a, b) => {
+        if (!a.totalPrice || !b.totalPrice) return 0;
+
+        if (sortOrder === QUERY_PARAMS_SORT_ORDER_ASC) {
+          return a.totalPrice - b.totalPrice;
+        } else {
+          return b.totalPrice - a.totalPrice;
+        }
+      });
+    }
+
+    if (page && limit) {
+      const startIndex = (parseInt(page) - 1) * parseInt(limit);
+      const endIndex = parseInt(page) * parseInt(limit);
+
+      assetsWithTicker = assetsWithTicker.slice(startIndex, endIndex);
+    }
 
     return new Response(JSON.stringify(assetsWithTicker), { status: 200 });
   } catch (error) {
