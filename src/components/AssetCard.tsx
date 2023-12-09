@@ -9,9 +9,10 @@ interface AssetCardProps {
   exchangeName: string;
   assets: NormalizedBalanceWithCurrentPrice[];
   isLoading: boolean;
+  isBalanceVisible: boolean;
 }
 
-const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading }) => {
+const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading, isBalanceVisible }) => {
   const assetList = normalizeBalance(assets);
 
   const total = assetList.reduce(
@@ -24,7 +25,11 @@ const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading }) => {
       <div className="flex justify-between items-center uppercase font-semibold mb-4 text-2xl">
         <p>{exchangeName}</p>
         <div>
-          {isLoading ? <Skeleton className="bg-zinc-500 w-[100px] h-[30px] rounded-md" /> : <p>${total.toFixed(2)}</p>}
+          {isLoading ? (
+            <Skeleton className="bg-zinc-500 w-[100px] h-[30px] rounded-md" />
+          ) : (
+            <p>${isBalanceVisible ? total.toFixed(2) : '******'}</p>
+          )}
         </div>
       </div>
 
@@ -70,10 +75,16 @@ const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading }) => {
                     <TableCell className="text-right">
                       {/* TODO: Convert values and prices into integers */}
                       {/* TODO: Trim total when something like 30.05000000000000 */}
-                      {asset.totalPrice && <p className="font-semibold">${asset.totalPrice.toFixed(2)}</p>}
-                      <p>
-                        {asset.value} {asset.name}
-                      </p>
+                      {asset.totalPrice && isBalanceVisible ? (
+                        <div>
+                          <p className="font-semibold">${asset.totalPrice.toFixed(2)}</p>
+                          <p>
+                            {asset.value} {asset.name}
+                          </p>
+                        </div>
+                      ) : (
+                        <p>*********</p>
+                      )}
                     </TableCell>
                   </TableRow>
                 ),
