@@ -1,6 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Providers from '@/components/Providers';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/ui/Toaster';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.scss';

@@ -1,7 +1,7 @@
 import { normalizeBalance } from '@/lib/utils/balance.util';
 import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
 import { KrakenBalanceWithCurrentPrice } from '@/types/user-data/kraken-user-data.types';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
 import { Skeleton } from './ui/skeleton';
 
@@ -10,15 +10,20 @@ interface AssetCardProps {
   assets: NormalizedBalanceWithCurrentPrice[];
   isLoading: boolean;
   isBalanceVisible: boolean;
+  handleTotalBalance: (total: number) => void;
 }
 
-const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading, isBalanceVisible }) => {
+const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading, isBalanceVisible, handleTotalBalance }) => {
   const assetList = normalizeBalance(assets);
 
   const total = assetList.reduce(
     (previous: number, current: KrakenBalanceWithCurrentPrice) => previous + (Number(current.totalPrice) || 0),
     0,
   );
+
+  useEffect(() => {
+    handleTotalBalance(total);
+  }, [total]);
 
   return (
     <article className="bg-slate-100 rounded-lg py-6 px-4">
@@ -75,15 +80,21 @@ const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading, isBala
                     <TableCell className="text-right">
                       {/* TODO: Convert values and prices into integers */}
                       {/* TODO: Trim total when something like 30.05000000000000 */}
-                      {asset.totalPrice && isBalanceVisible ? (
+                      {asset.totalPrice && (
                         <div>
-                          <p className="font-semibold">${asset.totalPrice.toFixed(2)}</p>
+                          <p className="font-semibold">
+                            {isBalanceVisible ? <span>${asset.totalPrice.toFixed(2)}</span> : <span>******</span>}
+                          </p>
                           <p>
-                            {asset.value} {asset.name}
+                            {isBalanceVisible ? (
+                              <span>
+                                {asset.value} {asset.name}
+                              </span>
+                            ) : (
+                              <span>*********</span>
+                            )}
                           </p>
                         </div>
-                      ) : (
-                        <p>*********</p>
                       )}
                     </TableCell>
                   </TableRow>

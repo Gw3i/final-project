@@ -16,6 +16,7 @@ const Page: FC<PageProps> = ({}) => {
   const [binanceAssets, setBinanceAssets] = useState<NormalizedBalanceWithCurrentPrice[]>([]);
   const [krakenAssets, setKrakenAssets] = useState<KrakenSortedBalance | null>(null);
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+  const [totalBalance, setTotalBalance] = useState(0);
 
   const { mutate: getBinanceAssets, isLoading } = useMutation({
     mutationFn: async () => {
@@ -51,6 +52,13 @@ const Page: FC<PageProps> = ({}) => {
     },
   });
 
+  // TODO: Balance is not showing right because BinanceAssets rerendering twice
+  const getTotal = (newBalance: number) => {
+    setTotalBalance((prevTotalBalance) => {
+      return prevTotalBalance + newBalance;
+    });
+  };
+
   useEffect(() => {
     getBinanceAssets();
     getKrakenAssets();
@@ -68,7 +76,7 @@ const Page: FC<PageProps> = ({}) => {
           <Button className="-mt-4" variant="ghost" onClick={() => setIsBalanceVisible(!isBalanceVisible)}>
             {isBalanceVisible ? <EyeOffIcon /> : <EyeIcon />}
           </Button>
-          <p className="uppercase font-semibold mb-4 text-2xl">$ Balance</p>
+          <p className="uppercase font-semibold mb-4 text-2xl">${totalBalance.toFixed(2)}</p>
         </div>
       </div>
 
@@ -78,12 +86,14 @@ const Page: FC<PageProps> = ({}) => {
           assets={binanceAssets}
           isLoading={isLoading}
           isBalanceVisible={isBalanceVisible}
+          handleTotalBalance={getTotal}
         />
         <AssetCard
           exchangeName="Kraken"
           assets={krakenAssets?.freeAssets ?? []}
           isLoading={isKrakenAssetsLoading}
           isBalanceVisible={isBalanceVisible}
+          handleTotalBalance={getTotal}
         />
       </div>
     </section>
