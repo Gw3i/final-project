@@ -1,6 +1,7 @@
 import { normalizeBalance } from '@/lib/utils/balance.util';
 import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
 import { KrakenBalanceWithCurrentPrice } from '@/types/user-data/kraken-user-data.types';
+import Link from 'next/link';
 import { FC, useEffect } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
 import { Skeleton } from './ui/skeleton';
@@ -26,7 +27,10 @@ const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading, isBala
   }, [total]);
 
   return (
-    <article className="bg-slate-100 rounded-lg py-6 px-4">
+    <Link
+      href={`/portfolio/${exchangeName.toLocaleLowerCase()}`}
+      className="bg-transparent  border-2 border-gray-300 rounded-[20px] py-6 px-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-40 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
+    >
       <div className="flex justify-between items-center uppercase font-semibold mb-4 text-2xl">
         <p>{exchangeName}</p>
         <div>
@@ -102,7 +106,7 @@ const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading, isBala
             )}
         </TableBody>
       </Table>
-    </article>
+    </Link>
   );
 };
 
