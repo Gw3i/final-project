@@ -8,3 +8,8 @@ export interface NormalizedBalanceWithCurrentPrice extends NormalizedBalance {
   totalPrice: number | null;
   isStaked: boolean;
 }
+
+export interface TotalBalance {
+  totalStaked: number;
+  totalFree: number;
+}

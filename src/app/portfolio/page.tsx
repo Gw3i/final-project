@@ -2,67 +2,19 @@
 
 import AssetCard from '@/components/AssetCard';
 import { Button } from '@/components/ui/button';
-import { toast } from '@/hooks/use-toast';
-import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
-import { KrakenSortedBalance } from '@/types/user-data/kraken-user-data.types';
-import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useGetTotalBalance } from '@/hooks';
+import { useGetAssetBalance } from '@/hooks/use-get-asset-balance';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
-import { FC, useEffect, useState } from 'react';
+import { useState } from 'react';
 
-interface PageProps {}
-
-const Page: FC<PageProps> = ({}) => {
-  const [binanceAssets, setBinanceAssets] = useState<NormalizedBalanceWithCurrentPrice[]>([]);
-  const [krakenAssets, setKrakenAssets] = useState<KrakenSortedBalance | null>(null);
+const Page = () => {
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
-  const [totalBalance, setTotalBalance] = useState(0);
 
-  const { mutate: getBinanceAssets, isLoading } = useMutation({
-    mutationFn: async () => {
-      const data = await axios.get<NormalizedBalanceWithCurrentPrice[]>('/api/portfolio/binance');
-
-      setBinanceAssets(data.data);
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        return toast({
-          title: error.message,
-          description: error.response?.data,
-          variant: 'destructive',
-        });
-      }
-    },
-  });
-
-  const { mutate: getKrakenAssets, isLoading: isKrakenAssetsLoading } = useMutation({
-    mutationFn: async () => {
-      const data = await axios.get<KrakenSortedBalance>('/api/portfolio/kraken?sortBy=value');
-
-      setKrakenAssets(data.data);
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        return toast({
-          title: error.message,
-          description: error.response?.data,
-          variant: 'destructive',
-        });
-      }
-    },
-  });
-
-  // TODO: Balance is not showing right because BinanceAssets rerendering twice
-  const getTotal = (newBalance: number) => {
-    setTotalBalance((prevTotalBalance) => {
-      return prevTotalBalance + newBalance;
-    });
-  };
-
-  useEffect(() => {
-    getBinanceAssets();
-    getKrakenAssets();
-  }, []);
+  const { balance: krakenBalance, isLoading: isLoadingKrakenBalance } = useGetAssetBalance('kraken');
+  const { balance: binanceBalance, isLoading: isLoadingBinanceBalance } = useGetAssetBalance('binance');
+  const { totalBalance: krakenTotalBalance, isLoading: isKrakenTotalBalanceLoading } = useGetTotalBalance('kraken');
+  const { totalBalance: binanceTotalBalance, isLoading: isBinanceTotalBalanceLoading } = useGetTotalBalance('binance');
 
   return (
     <section className="grid max-w-xl mx-auto mt-8">
@@ -76,24 +28,31 @@ const Page: FC<PageProps> = ({}) => {
           <Button className="-mt-4" variant="ghost" onClick={() => setIsBalanceVisible(!isBalanceVisible)}>
             {isBalanceVisible ? <EyeOffIcon /> : <EyeIcon />}
           </Button>
-          <p className="uppercase font-semibold mb-4 text-2xl">${totalBalance.toFixed(2)}</p>
+
+          {isKrakenTotalBalanceLoading || isBinanceTotalBalanceLoading ? (
+            <Skeleton className="bg-zinc-500 w-[100px] h-[32px] rounded-md mb-4" />
+          ) : (
+            <p className="uppercase font-semibold mb-4 text-2xl">
+              ${isBalanceVisible ? (krakenTotalBalance + binanceTotalBalance).toFixed(2) : '*******'}
+            </p>
+          )}
         </div>
       </div>
 
       <div className="grid gap-4">
         <AssetCard
           exchangeName="Binance"
-          assets={binanceAssets}
-          isLoading={isLoading}
+          assets={binanceBalance}
+          isLoading={isLoadingKrakenBalance}
           isBalanceVisible={isBalanceVisible}
-          handleTotalBalance={getTotal}
+          totalBalance={binanceTotalBalance}
         />
         <AssetCard
           exchangeName="Kraken"
-          assets={krakenAssets?.freeAssets ?? []}
-          isLoading={isKrakenAssetsLoading}
+          assets={krakenBalance}
+          isLoading={isLoadingBinanceBalance}
           isBalanceVisible={isBalanceVisible}
-          handleTotalBalance={getTotal}
+          totalBalance={krakenTotalBalance}
         />
       </div>
     </section>
