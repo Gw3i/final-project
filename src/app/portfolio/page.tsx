@@ -4,68 +4,17 @@ import AssetCard from '@/components/AssetCard';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetTotalBalance } from '@/hooks';
-import { toast } from '@/hooks/use-toast';
-import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
-import { KrakenBalanceWithCurrentPrice } from '@/types/user-data/kraken-user-data.types';
-import { useMutation } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import { useGetAssetBalance } from '@/hooks/use-get-asset-balance';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
-import { FC, useEffect, useState } from 'react';
+import { useState } from 'react';
 
-interface PageProps {}
-
-const Page: FC<PageProps> = ({}) => {
-  const [binanceAssets, setBinanceAssets] = useState<NormalizedBalanceWithCurrentPrice[]>([]);
-  const [krakenAssets, setKrakenAssets] = useState<KrakenBalanceWithCurrentPrice[]>([]);
+const Page = () => {
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
-  // const [krakenTotalBalance, setKrakenTotalBalance] = useState(0);
-  // const [binanceTotalBalance, setBinanceTotalBalance] = useState(0);
 
-  const { mutate: getBinanceAssets, isLoading } = useMutation({
-    mutationFn: async () => {
-      const data = await axios.get<NormalizedBalanceWithCurrentPrice[]>(
-        '/api/portfolio/binance?page=1&limit=5&sortBy=value&sortOrder=desc',
-      );
-
-      setBinanceAssets(data.data);
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        return toast({
-          title: error.message,
-          description: error.response?.data,
-          variant: 'destructive',
-        });
-      }
-    },
-  });
-
-  const { mutate: getKrakenAssets, isLoading: isKrakenAssetsLoading } = useMutation({
-    mutationFn: async () => {
-      const data = await axios.get<KrakenBalanceWithCurrentPrice[]>(
-        '/api/portfolio/kraken?page=1&limit=5&sortBy=value&sortOrder=desc',
-      );
-
-      setKrakenAssets(data.data);
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        return toast({
-          title: error.message,
-          description: error.response?.data,
-          variant: 'destructive',
-        });
-      }
-    },
-  });
-
+  const { balance: krakenBalance, isLoading: isLoadingKrakenBalance } = useGetAssetBalance('kraken');
+  const { balance: binanceBalance, isLoading: isLoadingBinanceBalance } = useGetAssetBalance('binance');
   const { totalBalance: krakenTotalBalance, isLoading: isKrakenTotalBalanceLoading } = useGetTotalBalance('kraken');
   const { totalBalance: binanceTotalBalance, isLoading: isBinanceTotalBalanceLoading } = useGetTotalBalance('binance');
-
-  useEffect(() => {
-    getBinanceAssets();
-    getKrakenAssets();
-  }, []);
 
   return (
     <section className="grid max-w-xl mx-auto mt-8">
@@ -93,15 +42,15 @@ const Page: FC<PageProps> = ({}) => {
       <div className="grid gap-4">
         <AssetCard
           exchangeName="Binance"
-          assets={binanceAssets}
-          isLoading={isLoading}
+          assets={binanceBalance}
+          isLoading={isLoadingKrakenBalance}
           isBalanceVisible={isBalanceVisible}
           totalBalance={binanceTotalBalance}
         />
         <AssetCard
           exchangeName="Kraken"
-          assets={krakenAssets ?? []}
-          isLoading={isKrakenAssetsLoading}
+          assets={krakenBalance}
+          isLoading={isLoadingBinanceBalance}
           isBalanceVisible={isBalanceVisible}
           totalBalance={krakenTotalBalance}
         />
