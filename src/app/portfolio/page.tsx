@@ -17,6 +17,7 @@ const Page: FC<PageProps> = ({}) => {
   const [krakenAssets, setKrakenAssets] = useState<KrakenBalanceWithCurrentPrice[]>([]);
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
   const [totalBalance, setTotalBalance] = useState(0);
+  const [krakenTotalBalance, setKrakenTotalBalance] = useState(0);
 
   const { mutate: getBinanceAssets, isLoading } = useMutation({
     mutationFn: async () => {
@@ -56,6 +57,23 @@ const Page: FC<PageProps> = ({}) => {
     },
   });
 
+  const { mutate: getKrakenTotalBalance, isKrakenTotalBalanceLoading } = useMutation({
+    mutationFn: async () => {
+      const data = await axios.get<number>('/api/portfolio/kraken/total-balance');
+
+      setKrakenTotalBalance(data.data);
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        return toast({
+          title: error.message,
+          description: error.response?.data,
+          variant: 'destructive',
+        });
+      }
+    },
+  });
+
   // TODO: Balance is not showing right because BinanceAssets rerendering twice
   const getTotal = (newBalance: number) => {
     setTotalBalance((prevTotalBalance) => {
@@ -66,6 +84,7 @@ const Page: FC<PageProps> = ({}) => {
   useEffect(() => {
     getBinanceAssets();
     getKrakenAssets();
+    getKrakenTotalBalance();
   }, []);
 
   return (

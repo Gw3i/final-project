@@ -1,15 +1,8 @@
 import { QUERY_PARAMS_SORT_BY_VALUE, QUERY_PARAMS_SORT_ORDER_ASC } from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
-import {
-  KrakenBalance,
-  KrakenBalanceResponse,
-  KrakenBalanceWithCurrentPrice,
-} from '@/types/user-data/kraken-user-data.types';
+import { KrakenBalanceWithCurrentPrice } from '@/types/user-data/kraken-user-data.types';
 import { NextRequest } from 'next/server';
-import { Kraken } from 'node-kraken-api';
-import { STACKED_ASSETS_ENDING } from '../../_constants/kraken.constants';
-import { getQueryParams } from '../../_utils';
-import { normalizeKrakenPairs } from '../../_utils/kraken-special-pairs.util';
+import { getKrakenBalanceDetails, getQueryParams } from '../../_utils';
 import { getSecrets } from '../../_utils/security.util';
 
 interface KrakenSymbolWithName {
@@ -39,72 +32,72 @@ export async function GET(request: NextRequest) {
 
     const { apiKey, apiSecret } = secrets;
 
-    const kraken = new Kraken({
-      key: apiKey,
-      secret: apiSecret,
-      gennonce: () => new Date().getTime(),
-    });
+    // const kraken = new Kraken({
+    //   key: apiKey,
+    //   secret: apiSecret,
+    //   gennonce: () => new Date().getTime(),
+    // });
 
-    const balance: KrakenBalanceResponse = await kraken.balance();
+    // const balance: KrakenBalanceResponse = await kraken.balance();
 
-    // Normalize Assets
-    const krakenBalance: KrakenBalance[] = [];
+    // // Normalize Assets
+    // const krakenBalance: KrakenBalance[] = [];
 
-    Object.entries(balance).forEach(([key, value]) => {
-      const balance = { name: key, value };
+    // Object.entries(balance).forEach(([key, value]) => {
+    //   const balance = { name: key, value };
 
-      krakenBalance.push(balance);
-    });
+    //   krakenBalance.push(balance);
+    // });
 
-    const getTickerForOwnedAssets = async () => {
-      // Get KrakenSymbol and AltName
-      const assets = await kraken.assets();
+    // const getTickerForOwnedAssets = async () => {
+    //   // Get KrakenSymbol and AltName
+    //   const assets = await kraken.assets();
 
-      const assetsWithSymbolName: KrakenSymbolWithName[] = Object.entries(assets).map(([key, value]) => ({
-        krakenSymbol: key,
-        altName: value.altname ?? null,
-      }));
+    //   const assetsWithSymbolName: KrakenSymbolWithName[] = Object.entries(assets).map(([key, value]) => ({
+    //     krakenSymbol: key,
+    //     altName: value.altname ?? null,
+    //   }));
 
-      const currency = 'USD';
-      const assetsWithTicker: Array<KrakenBalanceWithCurrentPrice | null> = await Promise.all(
-        krakenBalance.map(async (asset) => {
-          let assetName = asset.name;
-          let isStaked = false;
+    //   const currency = 'USD';
+    //   const assetsWithTicker: Array<KrakenBalanceWithCurrentPrice | null> = await Promise.all(
+    //     krakenBalance.map(async (asset) => {
+    //       let assetName = asset.name;
+    //       let isStaked = false;
 
-          assetsWithSymbolName.forEach((a) => {
-            if (assetName === a.krakenSymbol && a.altName) {
-              assetName = a.altName;
-            }
-          });
+    //       assetsWithSymbolName.forEach((a) => {
+    //         if (assetName === a.krakenSymbol && a.altName) {
+    //           assetName = a.altName;
+    //         }
+    //       });
 
-          if (assetName.includes(STACKED_ASSETS_ENDING)) {
-            const newName = assetName.replace(STACKED_ASSETS_ENDING, '');
-            assetName = newName;
-            isStaked = true;
-          }
+    //       if (assetName.includes(STACKED_ASSETS_ENDING)) {
+    //         const newName = assetName.replace(STACKED_ASSETS_ENDING, '');
+    //         assetName = newName;
+    //         isStaked = true;
+    //       }
 
-          const pair = assetName + currency;
-          const normalizedPair = normalizeKrakenPairs(pair);
+    //       const pair = assetName + currency;
+    //       const normalizedPair = normalizeKrakenPairs(pair);
 
-          const data = await kraken.ticker({ pair });
-          const currentPrice = data[normalizedPair ?? pair]?.o ?? null;
+    //       const data = await kraken.ticker({ pair });
+    //       const currentPrice = data[normalizedPair ?? pair]?.o ?? null;
 
-          const totalPrice = currentPrice ? Number(asset.value) * Number(currentPrice) : null;
+    //       const totalPrice = currentPrice ? Number(asset.value) * Number(currentPrice) : null;
 
-          return { name: assetName, value: asset.value, currentPrice, isStaked, totalPrice };
-        }),
-      );
+    //       return { name: assetName, value: asset.value, currentPrice, isStaked, totalPrice };
+    //     }),
+    //   );
 
-      return assetsWithTicker;
-    };
+    //   return assetsWithTicker;
+    // };
 
-    const balanceWithTicker = await getTickerForOwnedAssets();
+    const balanceWithTicker = await getKrakenBalanceDetails(apiKey, apiSecret);
 
     let freeAssets: KrakenBalanceWithCurrentPrice[] = [];
     let stackedAssets: KrakenBalanceWithCurrentPrice[] = [];
 
-    for (let i = 0; i < balanceWithTicker.length; i++) {
-      const asset = balanceWithTicker[i];
+    for (let i = 0; i < balanceWithTicker.assets.length; i++) {
+      const asset = balanceWithTicker.assets[i];
 
       if (!asset) return;
 
@@ -141,8 +134,6 @@ export async function GET(request: NextRequest) {
 
       finalAssets = finalAssets.slice(startIndex, endIndex);
     }
-
-    // TODO: Return totalBalance
 
     return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {
