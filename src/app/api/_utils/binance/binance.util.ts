@@ -12,6 +12,6 @@ export const getServerTime = async (): Promise<number> => {
 
 export const generateTimestamp = async (): Promise<number> => {
   const serverTime = await getServerTime();
-  const timestamp = serverTime + 1000; // Add a small buffer (1 second) to ensure it's within recvWindow
+  const timestamp = serverTime + 1000;
   return timestamp;
 };

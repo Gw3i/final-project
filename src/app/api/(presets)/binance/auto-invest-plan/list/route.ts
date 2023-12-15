@@ -1,4 +1,4 @@
-import { generateTimestamp } from '@/app/api/_utils/binance.util';
+import { generateTimestamp } from '@/app/api/_utils/binance/binance.util';
 import { decrypt, generateApiPayloadSignature } from '@/app/api/_utils/security.util';
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';

@@ -5,7 +5,7 @@ import { AutoInvestPlanType, SubscriptionCycle, WeekDay } from '@/types/binance/
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
-import { generateTimestamp } from '../../_utils/binance.util';
+import { generateTimestamp } from '../../_utils/binance/binance.util';
 import { decrypt, generateApiPayloadSignature } from '../../_utils/security.util';
 
 export interface PortfolioDetail {

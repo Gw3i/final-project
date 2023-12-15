@@ -3,7 +3,7 @@ import { PresetRangeTradingValidator } from '@/lib/validators/preset-form.valida
 import { FullResponse } from '@/types/binance/order.types';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
-import { generateTimestamp } from '../../_utils/binance.util';
+import { generateTimestamp } from '../../_utils/binance/binance.util';
 import { generateApiPayloadSignature, getSecrets } from '../../_utils/security.util';
 
 export interface CreateRangeTradingPlan {

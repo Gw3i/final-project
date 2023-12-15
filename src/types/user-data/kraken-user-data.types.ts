@@ -19,8 +19,3 @@ export interface KrakenSortedBalance {
   freeAssets: KrakenBalanceWithCurrentPrice[];
   stackedAssets: KrakenBalanceWithCurrentPrice[];
 }
-
-export interface KrakenTotalBalance {
-  totalStaked: number;
-  totalFree: number;
-}

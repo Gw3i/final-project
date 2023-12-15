@@ -1,8 +1,7 @@
 import { normalizeBalance } from '@/lib/utils/balance.util';
 import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
-import { KrakenBalanceWithCurrentPrice } from '@/types/user-data/kraken-user-data.types';
 import Link from 'next/link';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
 import { Skeleton } from './ui/skeleton';
 
@@ -11,20 +10,11 @@ interface AssetCardProps {
   assets: NormalizedBalanceWithCurrentPrice[];
   isLoading: boolean;
   isBalanceVisible: boolean;
-  handleTotalBalance: (total: number) => void;
+  totalBalance: number;
 }
 
-const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading, isBalanceVisible, handleTotalBalance }) => {
+const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading, isBalanceVisible, totalBalance }) => {
   const assetList = normalizeBalance(assets);
-
-  const total = assetList.reduce(
-    (previous: number, current: KrakenBalanceWithCurrentPrice) => previous + (Number(current.totalPrice) || 0),
-    0,
-  );
-
-  useEffect(() => {
-    handleTotalBalance(total);
-  }, [total]);
 
   return (
     <Link
@@ -35,9 +25,9 @@ const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading, isBala
         <p>{exchangeName}</p>
         <div>
           {isLoading ? (
-            <Skeleton className="bg-zinc-500 w-[100px] h-[30px] rounded-md" />
+            <Skeleton className="bg-zinc-500 w-[100px] h-[32px] rounded-md" />
           ) : (
-            <p>${isBalanceVisible ? total.toFixed(2) : '******'}</p>
+            <p>${isBalanceVisible ? totalBalance.toFixed(2) : '******'}</p>
           )}
         </div>
       </div>

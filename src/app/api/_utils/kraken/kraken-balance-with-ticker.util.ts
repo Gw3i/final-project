@@ -2,12 +2,12 @@ import {
   KrakenBalance,
   KrakenBalanceResponse,
   KrakenBalanceWithCurrentPrice,
-  KrakenTotalBalance,
 } from '@/types/user-data/kraken-user-data.types';
 import { Kraken } from 'node-kraken-api';
 
 import { normalizeKrakenPairs } from '.';
 import { STACKED_ASSETS_ENDING } from '../../_constants/kraken.constants';
+import { TotalBalance } from '@/types';
 
 interface KrakenSymbolWithName {
   krakenSymbol: string;
@@ -35,7 +35,7 @@ export const getKrakenBalanceDetails = async (apiKey: string, apiSecret: string)
 
   // Get KrakenSymbol and AltName
   const assets = await kraken.assets();
-  const totalBalance: KrakenTotalBalance = {
+  const totalBalance: TotalBalance = {
     totalFree: 0,
     totalStaked: 0,
   };
