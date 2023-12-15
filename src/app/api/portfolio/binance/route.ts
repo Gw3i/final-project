@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
           const tickerSymbol = ticker.symbol.replace(currency, '');
 
           if (asset.asset === tickerSymbol) {
-            const totalPrice = Number(asset.free) * Number(ticker.lastPrice);
+            const totalPrice = parseInt(asset.free) * parseInt(ticker.lastPrice);
 
             // TODO: Check for staked assets.
             const assetWithCurrentPrice: NormalizedBalanceWithCurrentPrice = {
@@ -111,6 +111,8 @@ export async function GET(request: NextRequest) {
 
       assetsWithTicker = assetsWithTicker.slice(startIndex, endIndex);
     }
+
+    // TODO: Return totalBalance
 
     return new Response(JSON.stringify(assetsWithTicker), { status: 200 });
   } catch (error) {

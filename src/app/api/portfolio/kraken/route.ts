@@ -115,8 +115,16 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    let finalAssets: KrakenBalanceWithCurrentPrice[] = [];
+
+    if (staked) {
+      finalAssets = stackedAssets;
+    } else {
+      finalAssets = freeAssets;
+    }
+
     if (sortBy === QUERY_PARAMS_SORT_BY_VALUE) {
-      freeAssets.sort((a, b) => {
+      finalAssets.sort((a, b) => {
         if (!a.totalPrice || !b.totalPrice) return 0;
 
         if (sortOrder === QUERY_PARAMS_SORT_ORDER_ASC) {
@@ -131,16 +139,10 @@ export async function GET(request: NextRequest) {
       const startIndex = (parseInt(page) - 1) * parseInt(limit);
       const endIndex = parseInt(page) * parseInt(limit);
 
-      freeAssets = freeAssets.slice(startIndex, endIndex);
+      finalAssets = finalAssets.slice(startIndex, endIndex);
     }
 
-    let finalAssets: KrakenBalanceWithCurrentPrice[] = [];
-
-    if (staked) {
-      finalAssets = stackedAssets;
-    } else {
-      finalAssets = freeAssets;
-    }
+    // TODO: Return totalBalance
 
     return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {

@@ -29,7 +29,7 @@ const AssetCard: FC<AssetCardProps> = ({ exchangeName, assets, isLoading, isBala
   return (
     <Link
       href={`/portfolio/${exchangeName.toLocaleLowerCase()}`}
-      className="bg-transparent  border-2 border-gray-300 rounded-[20px] py-6 px-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-40 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
+      className="bg-transparent  border-2 border-gray-300 rounded-[20px] py-6 px-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-50 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
     >
       <div className="flex justify-between items-center uppercase font-semibold mb-4 text-2xl">
         <p>{exchangeName}</p>

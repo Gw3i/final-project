@@ -1,9 +1,13 @@
-import { FC } from 'react';
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
 
-interface pageProps {}
+const page = async ({ params }: PageProps) => {
+  const { slug } = params;
 
-const page: FC<pageProps> = ({}) => {
-  return <div>page</div>;
+  return <div>{slug}</div>;
 };
 
 export default page;
