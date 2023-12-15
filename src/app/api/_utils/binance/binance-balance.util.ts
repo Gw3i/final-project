@@ -53,7 +53,7 @@ export const getBinanceBalanceDetails = async (balances: BinanceBalance[]) => {
       const tickerSymbol = ticker.symbol.replace(currency, '');
 
       if (asset.asset === tickerSymbol) {
-        const totalPrice = parseInt(asset.free) * parseInt(ticker.lastPrice);
+        const totalPrice = parseFloat(asset.free) * parseFloat(ticker.lastPrice);
         totalBalance.totalFree = totalBalance.totalFree + totalPrice;
 
         // TODO: Check for staked assets.
