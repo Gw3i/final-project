@@ -2,6 +2,7 @@
 
 import AssetCard from '@/components/AssetCard';
 import { buttonVariants } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useGetTotalBalance } from '@/hooks';
 import { useGetAssetBalance } from '@/hooks/use-get-asset-balance';
 import { Exchange } from '@/types';
@@ -32,19 +33,33 @@ const Page = ({ params }: PageProps) => {
 
   return (
     <section>
-      <article className="grid grid-cols-[1fr,auto] grid-rows-[1fr,auto]">
+      <article className="grid grid-cols-[minmax(0,1fr),auto] grid-rows-[1fr,auto]">
         <h1 className="uppercase font-bold mb-4 text-4xl">{slug.toUpperCase()}</h1>
 
         <div className="mb-4 text-md max-w-[200px]">
-          <p className="w-full inline-flex justify-between gap-1">
-            <span>Free:</span> <span>${totalBalance.toFixed(2)}</span>
-          </p>
-          <p className="w-full inline-flex justify-between gap-1">
-            <span>Staked:</span> <span>${stakedTotalBalance.toFixed(2)}</span>
-          </p>
-          <p className="w-full inline-flex justify-between gap-1 font-semibold text-2xl">
-            <span>Total:</span> <span>${(totalBalance + stakedTotalBalance).toFixed(2)}</span>
-          </p>
+          {isLoadingTotalBalance ? (
+            <Skeleton className="bg-zinc-500 w-[200px] h-[22px] rounded-md mb-[2px]" />
+          ) : (
+            <p className="w-full inline-flex justify-between gap-1">
+              <span>Free:</span> <span>${totalBalance.toFixed(2)}</span>
+            </p>
+          )}
+
+          {isLoadingStakedTotalBalance ? (
+            <Skeleton className="bg-zinc-500 w-[200px] h-[22px] rounded-md mb-[2px]" />
+          ) : (
+            <p className="w-full inline-flex justify-between gap-1">
+              <span>Staked:</span> <span>${stakedTotalBalance.toFixed(2)}</span>
+            </p>
+          )}
+
+          {isLoadingTotalBalance && isLoadingStakedTotalBalance ? (
+            <Skeleton className="bg-zinc-500 w-[200px] h-[32px] rounded-md" />
+          ) : (
+            <p className="w-full inline-flex justify-between gap-1 font-semibold text-2xl">
+              <span>Total:</span> <span>${(totalBalance + stakedTotalBalance).toFixed(2)}</span>
+            </p>
+          )}
         </div>
 
         <Link
