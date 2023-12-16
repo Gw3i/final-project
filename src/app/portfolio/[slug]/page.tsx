@@ -16,6 +16,9 @@ interface PageProps {
 }
 
 const Page = ({ params }: PageProps) => {
+  // TODO: Add skeleton
+  // TODO: Cache totalBalances and balance
+
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
 
   const { slug } = params;
@@ -56,7 +59,7 @@ const Page = ({ params }: PageProps) => {
 
       <div className="grid">
         <AssetCard
-          exchangeName={slug}
+          headline="All assets"
           assets={balance}
           isLoading={isLoading}
           isBalanceVisible={isBalanceVisible}

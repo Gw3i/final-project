@@ -31,8 +31,12 @@ const Page = () => {
     exchange: 'binance',
     queryParams: assetBalanceQueryParams,
   });
-  const { totalBalance: krakenTotalBalance, isLoading: isKrakenTotalBalanceLoading } = useGetTotalBalance({exchange:'kraken'});
-  const { totalBalance: binanceTotalBalance, isLoading: isBinanceTotalBalanceLoading } = useGetTotalBalance({exchange:'binance'});
+  const { totalBalance: krakenTotalBalance, isLoading: isKrakenTotalBalanceLoading } = useGetTotalBalance({
+    exchange: 'kraken',
+  });
+  const { totalBalance: binanceTotalBalance, isLoading: isBinanceTotalBalanceLoading } = useGetTotalBalance({
+    exchange: 'binance',
+  });
 
   return (
     <section className="grid max-w-xl mx-auto mt-8">
@@ -64,6 +68,7 @@ const Page = () => {
           isLoading={isLoadingKrakenBalance}
           isBalanceVisible={isBalanceVisible}
           totalBalance={binanceTotalBalance}
+          hasLink
         />
         <AssetCard
           exchangeName="Kraken"
@@ -71,6 +76,7 @@ const Page = () => {
           isLoading={isLoadingBinanceBalance}
           isBalanceVisible={isBalanceVisible}
           totalBalance={krakenTotalBalance}
+          hasLink
         />
       </div>
     </section>
