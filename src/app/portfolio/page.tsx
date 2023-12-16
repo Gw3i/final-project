@@ -5,16 +5,34 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetTotalBalance } from '@/hooks';
 import { useGetAssetBalance } from '@/hooks/use-get-asset-balance';
+import { CreateBaseQueryParams } from '@/lib/validators/query-params.validator';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useState } from 'react';
 
 const Page = () => {
   const [isBalanceVisible, setIsBalanceVisible] = useState(true);
 
-  const { balance: krakenBalance, isLoading: isLoadingKrakenBalance } = useGetAssetBalance('kraken');
-  const { balance: binanceBalance, isLoading: isLoadingBinanceBalance } = useGetAssetBalance('binance');
-  const { totalBalance: krakenTotalBalance, isLoading: isKrakenTotalBalanceLoading } = useGetTotalBalance('kraken');
-  const { totalBalance: binanceTotalBalance, isLoading: isBinanceTotalBalanceLoading } = useGetTotalBalance('binance');
+  // TODO: Add cache when assets were loaded once
+  // TODO: Move balance visibility to as Context
+
+  const assetBalanceQueryParams: CreateBaseQueryParams = {
+    page: '1',
+    limit: '5',
+    sortBy: 'value',
+    sortOrder: 'desc',
+    staked: false,
+  };
+
+  const { balance: krakenBalance, isLoading: isLoadingKrakenBalance } = useGetAssetBalance({
+    exchange: 'kraken',
+    queryParams: assetBalanceQueryParams,
+  });
+  const { balance: binanceBalance, isLoading: isLoadingBinanceBalance } = useGetAssetBalance({
+    exchange: 'binance',
+    queryParams: assetBalanceQueryParams,
+  });
+  const { totalBalance: krakenTotalBalance, isLoading: isKrakenTotalBalanceLoading } = useGetTotalBalance({exchange:'kraken'});
+  const { totalBalance: binanceTotalBalance, isLoading: isBinanceTotalBalanceLoading } = useGetTotalBalance({exchange:'binance'});
 
   return (
     <section className="grid max-w-xl mx-auto mt-8">

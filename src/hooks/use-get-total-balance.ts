@@ -1,15 +1,34 @@
+import { CreateBaseQueryParams } from '@/lib/validators/query-params.validator';
 import { Exchange } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from './use-toast';
 
-export const useGetTotalBalance = (exchange: Exchange) => {
+interface UseGetTotalBalanceConfig {
+  exchange: Exchange;
+  staked?: boolean;
+}
+
+export const useGetTotalBalance = ({ exchange, staked }: UseGetTotalBalanceConfig) => {
   const [totalBalance, setTotalBalance] = useState(0);
 
   const { mutate: getTotalBalance, isLoading } = useMutation({
     mutationFn: async () => {
-      const data = await axios.get<number>(`/api/portfolio/${exchange}/total-balance`);
+      const stakedQueryParam: CreateBaseQueryParams = { staked: true };
+      const queryString = Object.entries(stakedQueryParam)
+        .map(([key, value]) => value && `${key}=${encodeURIComponent(value.toString())}`)
+        .join('');
+
+      const url = `/api/portfolio/${exchange}/total-balance`;
+
+      let fullUrl = url;
+
+      if (staked) {
+        fullUrl = `${url}?${queryString}`;
+      }
+
+      const data = await axios.get<number>(fullUrl);
 
       setTotalBalance(data.data);
     },

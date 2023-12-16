@@ -1,13 +1,70 @@
+'use client';
+
+import AssetCard from '@/components/AssetCard';
+import { buttonVariants } from '@/components/ui/button';
+import { useGetTotalBalance } from '@/hooks';
+import { useGetAssetBalance } from '@/hooks/use-get-asset-balance';
+import { Exchange } from '@/types';
+import { ExternalLink } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+
 interface PageProps {
   params: {
-    slug: string;
+    slug: Exchange;
   };
 }
 
-const page = async ({ params }: PageProps) => {
+const Page = ({ params }: PageProps) => {
+  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+
   const { slug } = params;
 
-  return <div>{slug}</div>;
+  const { balance, isLoading } = useGetAssetBalance({ exchange: slug });
+  const { totalBalance, isLoading: isLoadingTotalBalance } = useGetTotalBalance({ exchange: slug });
+  const { totalBalance: stakedTotalBalance, isLoading: isLoadingStakedTotalBalance } = useGetTotalBalance({
+    exchange: slug,
+    staked: true,
+  });
+
+  return (
+    <section>
+      <article className="grid grid-cols-[1fr,auto] grid-rows-[1fr,auto]">
+        <h1 className="uppercase font-bold mb-4 text-4xl">{slug.toUpperCase()}</h1>
+
+        <div className="mb-4 text-md max-w-[200px]">
+          <p className="w-full inline-flex justify-between gap-1">
+            <span>Free:</span> <span>${totalBalance.toFixed(2)}</span>
+          </p>
+          <p className="w-full inline-flex justify-between gap-1">
+            <span>Staked:</span> <span>${stakedTotalBalance.toFixed(2)}</span>
+          </p>
+          <p className="w-full inline-flex justify-between gap-1 font-semibold text-2xl">
+            <span>Total:</span> <span>${(totalBalance + stakedTotalBalance).toFixed(2)}</span>
+          </p>
+        </div>
+
+        <Link
+          href={`https://${slug}.com`}
+          target="_blank"
+          title={`Create new order on ${slug}`}
+          className={buttonVariants({ variant: 'default' }) + 'col-start-2 col-end-3 row-start-1'}
+        >
+          <span className="mr-2">New order</span> <ExternalLink />
+        </Link>
+      </article>
+
+      <div className="grid">
+        <AssetCard
+          exchangeName={slug}
+          assets={balance}
+          isLoading={isLoading}
+          isBalanceVisible={isBalanceVisible}
+          totalBalance={totalBalance}
+        />
+      </div>
+    </section>
+  );
 };
 
-export default page;
+export default Page;
