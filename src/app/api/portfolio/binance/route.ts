@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
       assets = assets.slice(startIndex, endIndex);
     }
 
-    await redis.hset(`balance:kraken`, { balance: assets });
+    await redis.hset(`balance:binance`, { balance: assets });
 
     return new Response(JSON.stringify(assets), { status: 200 });
   } catch (error) {
