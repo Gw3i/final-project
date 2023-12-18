@@ -1,5 +1,6 @@
 import { QUERY_PARAMS_SORT_BY_VALUE, QUERY_PARAMS_SORT_ORDER_ASC } from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
+import { redis } from '@/lib/redis';
 import { KrakenBalanceWithCurrentPrice } from '@/types/user-data/kraken-user-data.types';
 import { NextRequest } from 'next/server';
 import { getKrakenBalanceDetails, getQueryParams } from '../../_utils';
@@ -31,65 +32,6 @@ export async function GET(request: NextRequest) {
     const { limit, page, sortBy, staked, sortOrder } = getQueryParams(url);
 
     const { apiKey, apiSecret } = secrets;
-
-    // const kraken = new Kraken({
-    //   key: apiKey,
-    //   secret: apiSecret,
-    //   gennonce: () => new Date().getTime(),
-    // });
-
-    // const balance: KrakenBalanceResponse = await kraken.balance();
-
-    // // Normalize Assets
-    // const krakenBalance: KrakenBalance[] = [];
-
-    // Object.entries(balance).forEach(([key, value]) => {
-    //   const balance = { name: key, value };
-
-    //   krakenBalance.push(balance);
-    // });
-
-    // const getTickerForOwnedAssets = async () => {
-    //   // Get KrakenSymbol and AltName
-    //   const assets = await kraken.assets();
-
-    //   const assetsWithSymbolName: KrakenSymbolWithName[] = Object.entries(assets).map(([key, value]) => ({
-    //     krakenSymbol: key,
-    //     altName: value.altname ?? null,
-    //   }));
-
-    //   const currency = 'USD';
-    //   const assetsWithTicker: Array<KrakenBalanceWithCurrentPrice | null> = await Promise.all(
-    //     krakenBalance.map(async (asset) => {
-    //       let assetName = asset.name;
-    //       let isStaked = false;
-
-    //       assetsWithSymbolName.forEach((a) => {
-    //         if (assetName === a.krakenSymbol && a.altName) {
-    //           assetName = a.altName;
-    //         }
-    //       });
-
-    //       if (assetName.includes(STACKED_ASSETS_ENDING)) {
-    //         const newName = assetName.replace(STACKED_ASSETS_ENDING, '');
-    //         assetName = newName;
-    //         isStaked = true;
-    //       }
-
-    //       const pair = assetName + currency;
-    //       const normalizedPair = normalizeKrakenPairs(pair);
-
-    //       const data = await kraken.ticker({ pair });
-    //       const currentPrice = data[normalizedPair ?? pair]?.o ?? null;
-
-    //       const totalPrice = currentPrice ? Number(asset.value) * Number(currentPrice) : null;
-
-    //       return { name: assetName, value: asset.value, currentPrice, isStaked, totalPrice };
-    //     }),
-    //   );
-
-    //   return assetsWithTicker;
-    // };
 
     const balanceWithTicker = await getKrakenBalanceDetails(apiKey, apiSecret);
 
@@ -134,6 +76,8 @@ export async function GET(request: NextRequest) {
 
       finalAssets = finalAssets.slice(startIndex, endIndex);
     }
+
+    await redis.hset(`balance:kraken`, { freeAssets, stackedAssets });
 
     return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {

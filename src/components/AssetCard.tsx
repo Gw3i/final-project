@@ -29,6 +29,8 @@ const AssetCard: FC<AssetCardProps> = ({
   // TODO: Check if necessary
   const assetList = normalizeBalance(assets);
 
+  console.log({ totalBalance });
+
   const getContentTpl = () => {
     return (
       <>

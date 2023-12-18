@@ -55,7 +55,8 @@ const Page = () => {
             <Skeleton className="bg-zinc-500 w-[100px] h-[32px] rounded-md mb-4" />
           ) : (
             <p className="uppercase font-semibold mb-4 text-2xl">
-              ${isBalanceVisible ? (krakenTotalBalance + binanceTotalBalance).toFixed(2) : '*******'}
+              $
+              {isBalanceVisible ? (krakenTotalBalance.totalFree + binanceTotalBalance.totalFree).toFixed(2) : '*******'}
             </p>
           )}
         </div>
@@ -67,7 +68,7 @@ const Page = () => {
           assets={binanceBalance}
           isLoading={isLoadingKrakenBalance}
           isBalanceVisible={isBalanceVisible}
-          totalBalance={binanceTotalBalance}
+          totalBalance={binanceTotalBalance.totalFree}
           hasLink
         />
         <AssetCard
@@ -75,7 +76,7 @@ const Page = () => {
           assets={krakenBalance}
           isLoading={isLoadingBinanceBalance}
           isBalanceVisible={isBalanceVisible}
-          totalBalance={krakenTotalBalance}
+          totalBalance={krakenTotalBalance.totalFree}
           hasLink
         />
       </div>
