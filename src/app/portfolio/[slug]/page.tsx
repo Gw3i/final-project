@@ -1,6 +1,7 @@
 import PortfolioDetailsHeader from '@/components/PortfolioDetailsHeader';
+import PortfolioStatisticsCards from '@/components/PortfolioStatisticsCards';
 import { redis } from '@/lib/redis';
-import { CachedTotalBalance, Exchange, KrakenSortedBalance } from '@/types';
+import { CachedTotalBalance, Exchange, NormalizedBalanceWithCurrentPrice } from '@/types';
 
 interface PageProps {
   params: {
@@ -17,22 +18,20 @@ const Page = async ({ params }: PageProps) => {
 
   const { slug } = params;
 
-  const cachedBalance = (await redis.hgetall(`balance:${slug}`)) as KrakenSortedBalance | null;
+  const cachedBalance = (await redis.hgetall(`balance:${slug}`)) as {
+    balance: NormalizedBalanceWithCurrentPrice[];
+  } | null;
   const cachedTotalBalance = (await redis.hgetall(`totalBalance:${slug}`)) as CachedTotalBalance | null;
 
   return (
     <section>
       {cachedTotalBalance && <PortfolioDetailsHeader slug={slug} cachedTotalBalance={cachedTotalBalance} />}
 
-      {/* <div className="grid">
-        <AssetCard
-          headline="All assets"
-          assets={balance}
-          isLoading={isLoading}
-          isBalanceVisible={true}
-          totalBalance={totalBalance}
-        />
-      </div> */}
+      <PortfolioStatisticsCards
+        slug={slug}
+        cachedTotalBalance={cachedTotalBalance}
+        cachedBalance={cachedBalance?.balance ?? null}
+      />
     </section>
   );
 };

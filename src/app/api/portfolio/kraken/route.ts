@@ -1,15 +1,11 @@
 import { QUERY_PARAMS_SORT_BY_VALUE, QUERY_PARAMS_SORT_ORDER_ASC } from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
 import { redis } from '@/lib/redis';
+import { NormalizedBalanceWithCurrentPrice } from '@/types';
 import { KrakenBalanceWithCurrentPrice } from '@/types/user-data/kraken-user-data.types';
 import { NextRequest } from 'next/server';
 import { getKrakenBalanceDetails, getQueryParams } from '../../_utils';
 import { getSecrets } from '../../_utils/security.util';
-
-interface KrakenSymbolWithName {
-  krakenSymbol: string;
-  altName: string | null;
-}
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
@@ -50,7 +46,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    let finalAssets: KrakenBalanceWithCurrentPrice[] = [];
+    let finalAssets: NormalizedBalanceWithCurrentPrice[] = [];
 
     if (staked) {
       finalAssets = stackedAssets;
@@ -77,7 +73,7 @@ export async function GET(request: NextRequest) {
       finalAssets = finalAssets.slice(startIndex, endIndex);
     }
 
-    await redis.hset(`balance:kraken`, { freeAssets, stackedAssets });
+    await redis.hset(`balance:kraken`, { balance: finalAssets });
 
     return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {

@@ -65,8 +65,6 @@ export async function GET(request: NextRequest, response: NextResponse) {
         },
       );
 
-      console.log(response.data);
-
       return response.data;
     };
 

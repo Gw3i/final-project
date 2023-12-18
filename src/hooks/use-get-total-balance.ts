@@ -34,8 +34,6 @@ export const useGetTotalBalance = ({ exchange }: UseGetTotalBalanceConfig) => {
     getTotalBalance();
   }, []);
 
-  console.log({ useGet: totalBalance, exchange });
-
   const totalBalanceWithLoadingState = { totalBalance, isLoading };
 
   return totalBalanceWithLoadingState;

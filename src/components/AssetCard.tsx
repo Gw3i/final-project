@@ -24,12 +24,10 @@ const AssetCard: FC<AssetCardProps> = ({
   totalBalance,
   hasLink = false,
 }) => {
-  // TODO: Some Kraken assets have balance 0
+  // TODO: Fix - Some Kraken assets have balance 0
 
   // TODO: Check if necessary
   const assetList = normalizeBalance(assets);
-
-  console.log({ totalBalance });
 
   const getContentTpl = () => {
     return (

@@ -12,7 +12,7 @@ import { Skeleton } from './ui/skeleton';
 
 interface PortfolioDetailsHeaderProps {
   slug: Exchange;
-  cachedTotalBalance: CachedTotalBalance;
+  cachedTotalBalance: CachedTotalBalance | null;
 }
 
 const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedTotalBalance }) => {
