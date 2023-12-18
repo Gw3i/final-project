@@ -78,11 +78,11 @@ const AssetCard: FC<AssetCardProps> = ({
                 (asset) =>
                   !asset.isStaked && (
                     <TableRow key={asset.name}>
-                      <TableCell className="font-medium ">{asset.name}</TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="font-medium py-2">{asset.name}</TableCell>
+                      <TableCell className="text-right py-2">
                         <p>${asset.currentPrice ? Number(asset.currentPrice).toFixed(5) : 'Not found'}</p>{' '}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right py-2">
                         {/* TODO: Convert values and prices into integers */}
                         {/* TODO: Trim total when something like 30.05000000000000 */}
                         {asset.totalPrice && (
