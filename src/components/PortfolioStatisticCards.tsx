@@ -77,18 +77,35 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cach
     } else {
       const { totalFree, totalStaked } = cachedTotalBalance;
 
-      setTotalBalance({ totalFree: parseInt(totalFree), totalStaked: parseInt(totalStaked) });
+      setTotalBalance({ totalFree: Number(totalFree), totalStaked: Number(totalStaked) });
     }
   }, [cachedBalance, cachedTotalBalance]);
+
+  const getTop5Assets = () => {
+    const sortedBalance = balance.toSorted((a, b) => {
+      if (!a.totalPrice || !b.totalPrice) return 0;
+
+      return b.totalPrice - a.totalPrice;
+    });
+
+    const top5assets = sortedBalance.slice(0, 5);
+    const top5AssetsTotalBalance = top5assets.reduce((accumulator, currentValue) => {
+      if (!currentValue.totalPrice) return 0;
+
+      return accumulator + currentValue.totalPrice;
+    }, 0);
+
+    return { top5assets, top5AssetsTotalBalance };
+  };
 
   return (
     <article className="grid">
       <AssetCard
         headline="Top 5 assets"
-        assets={balance}
+        assets={getTop5Assets().top5assets}
         isLoading={isBalanceLoading ?? false}
         isBalanceVisible={true}
-        totalBalance={totalBalance.totalFree}
+        totalBalance={getTop5Assets().top5AssetsTotalBalance}
       />
 
       <AssetCard

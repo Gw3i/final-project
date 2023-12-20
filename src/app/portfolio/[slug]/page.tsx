@@ -14,11 +14,9 @@ export const fetchCache = 'force-no-store';
 
 const Page = async ({ params }: PageProps) => {
   // TODO: Add skeleton
-  // TODO: Cache totalBalances and balance
 
   const { slug } = params;
 
-  // TODO: Response should be {freeAssets, stakedAssets}
   const cachedBalance = (await redis.hgetall(`balance:${slug}`)) as {
     freeAssets: NormalizedBalanceWithCurrentPrice[];
     stakedAssets: NormalizedBalanceWithCurrentPrice[];
