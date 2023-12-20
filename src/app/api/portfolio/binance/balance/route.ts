@@ -1,10 +1,11 @@
+import { getSecrets, getQueryParams, getBinanceBalance, getBinanceBalanceDetails } from '@/app/api/_utils';
 import { QUERY_PARAMS_SORT_BY_VALUE, QUERY_PARAMS_SORT_ORDER_ASC } from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
 import { redis } from '@/lib/redis';
+import { NormalizedBalanceWithCurrentPrice } from '@/types';
 import { AxiosError } from 'axios';
 import { NextRequest } from 'next/server';
-import { getBinanceBalance, getBinanceBalanceDetails, getQueryParams } from '../../_utils';
-import { getSecrets } from '../../_utils/security.util';
+
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
@@ -31,6 +32,8 @@ export async function GET(request: NextRequest) {
     const balance = await getBinanceBalance(apiKey, apiSecret);
 
     let { assets } = await getBinanceBalanceDetails(balance);
+    // TODO: Get staked assets from Binance
+    const stackedAssets: NormalizedBalanceWithCurrentPrice[] = [];
 
     if (sortBy === QUERY_PARAMS_SORT_BY_VALUE) {
       assets.sort((a, b) => {
@@ -51,7 +54,8 @@ export async function GET(request: NextRequest) {
       assets = assets.slice(startIndex, endIndex);
     }
 
-    await redis.hset(`balance:binance`, { balance: assets });
+    // TODO: Add staked assets
+    await redis.hset(`balance:binance`, { freeAssets: assets, stackedAssets: [] });
 
     return new Response(JSON.stringify(assets), { status: 200 });
   } catch (error) {

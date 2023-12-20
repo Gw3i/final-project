@@ -20,7 +20,7 @@ export const useGetAssetBalance = ({ exchange, queryParams }: UseGetTotalBalance
         .map(([key, value]) => `${key}=${value}`)
         .join('&');
 
-      const url = `/api/portfolio/${exchange}`;
+      const url = `/api/portfolio/${exchange}/balance`;
       let fullUrl = url;
 
       if (queryString.length) {

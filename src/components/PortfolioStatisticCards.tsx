@@ -13,7 +13,7 @@ interface PortfolioStatisticsCardsProps {
   cachedTotalBalance: CachedTotalBalance | null;
 }
 
-const PortfolioStatisticsCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cachedBalance, cachedTotalBalance }) => {
+const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cachedBalance, cachedTotalBalance }) => {
   const [balance, setBalance] = useState<NormalizedBalanceWithCurrentPrice[]>([]);
   const [totalBalance, setTotalBalance] = useState<TotalBalance>({ totalFree: 0, totalStaked: 0 });
 
@@ -43,7 +43,7 @@ const PortfolioStatisticsCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cac
       //     .map(([key, value]) => `${key}=${value}`)
       //     .join('&');
 
-      const url = `/api/portfolio/${slug}`;
+      const url = `/api/portfolio/${slug}/balance`;
       let fullUrl = url;
 
       //   if (queryString.length) {
@@ -79,10 +79,18 @@ const PortfolioStatisticsCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cac
 
       setTotalBalance({ totalFree: parseInt(totalFree), totalStaked: parseInt(totalStaked) });
     }
-  }, [cachedBalance]);
+  }, [cachedBalance, cachedTotalBalance]);
 
   return (
     <article className="grid">
+      <AssetCard
+        headline="Top 5 assets"
+        assets={balance}
+        isLoading={isBalanceLoading ?? false}
+        isBalanceVisible={true}
+        totalBalance={totalBalance.totalFree}
+      />
+
       <AssetCard
         headline="All assets"
         assets={balance}
@@ -94,4 +102,4 @@ const PortfolioStatisticsCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cac
   );
 };
 
-export default PortfolioStatisticsCards;
+export default PortfolioStatisticCards;

@@ -1,5 +1,5 @@
 import PortfolioDetailsHeader from '@/components/PortfolioDetailsHeader';
-import PortfolioStatisticsCards from '@/components/PortfolioStatisticsCards';
+import PortfolioStatisticCards from '@/components/PortfolioStatisticCards';
 import { redis } from '@/lib/redis';
 import { CachedTotalBalance, Exchange, NormalizedBalanceWithCurrentPrice } from '@/types';
 
@@ -18,19 +18,22 @@ const Page = async ({ params }: PageProps) => {
 
   const { slug } = params;
 
+  // TODO: Response should be {freeAssets, stakedAssets}
   const cachedBalance = (await redis.hgetall(`balance:${slug}`)) as {
-    balance: NormalizedBalanceWithCurrentPrice[];
+    freeAssets: NormalizedBalanceWithCurrentPrice[];
+    stakedAssets: NormalizedBalanceWithCurrentPrice[];
   } | null;
+
   const cachedTotalBalance = (await redis.hgetall(`totalBalance:${slug}`)) as CachedTotalBalance | null;
 
   return (
     <section>
       {cachedTotalBalance && <PortfolioDetailsHeader slug={slug} cachedTotalBalance={cachedTotalBalance} />}
 
-      <PortfolioStatisticsCards
+      <PortfolioStatisticCards
         slug={slug}
         cachedTotalBalance={cachedTotalBalance}
-        cachedBalance={cachedBalance?.balance ?? null}
+        cachedBalance={cachedBalance?.freeAssets ?? null}
       />
     </section>
   );

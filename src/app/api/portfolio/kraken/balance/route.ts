@@ -1,11 +1,9 @@
+import { getKrakenBalanceDetails, getQueryParams, getSecrets } from '@/app/api/_utils';
 import { QUERY_PARAMS_SORT_BY_VALUE, QUERY_PARAMS_SORT_ORDER_ASC } from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
 import { redis } from '@/lib/redis';
 import { NormalizedBalanceWithCurrentPrice } from '@/types';
-import { KrakenBalanceWithCurrentPrice } from '@/types/user-data/kraken-user-data.types';
 import { NextRequest } from 'next/server';
-import { getKrakenBalanceDetails, getQueryParams } from '../../_utils';
-import { getSecrets } from '../../_utils/security.util';
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
@@ -31,8 +29,8 @@ export async function GET(request: NextRequest) {
 
     const balanceWithTicker = await getKrakenBalanceDetails(apiKey, apiSecret);
 
-    let freeAssets: KrakenBalanceWithCurrentPrice[] = [];
-    let stackedAssets: KrakenBalanceWithCurrentPrice[] = [];
+    let freeAssets: NormalizedBalanceWithCurrentPrice[] = [];
+    let stackedAssets: NormalizedBalanceWithCurrentPrice[] = [];
 
     for (let i = 0; i < balanceWithTicker.assets.length; i++) {
       const asset = balanceWithTicker.assets[i];
@@ -73,7 +71,7 @@ export async function GET(request: NextRequest) {
       finalAssets = finalAssets.slice(startIndex, endIndex);
     }
 
-    await redis.hset(`balance:kraken`, { balance: finalAssets });
+    await redis.hset(`balance:kraken`, { freeAssets, stackedAssets });
 
     return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {
