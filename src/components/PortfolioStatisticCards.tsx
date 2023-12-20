@@ -10,11 +10,18 @@ import AssetCard from './AssetCard';
 interface PortfolioStatisticsCardsProps {
   slug: Exchange;
   cachedBalance: NormalizedBalanceWithCurrentPrice[] | null;
+  cachedStakedBalance: NormalizedBalanceWithCurrentPrice[] | null;
   cachedTotalBalance: CachedTotalBalance | null;
 }
 
-const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cachedBalance, cachedTotalBalance }) => {
+const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({
+  slug,
+  cachedBalance,
+  cachedTotalBalance,
+  cachedStakedBalance,
+}) => {
   const [balance, setBalance] = useState<NormalizedBalanceWithCurrentPrice[]>([]);
+  const [stakedBalance, setStakedBalance] = useState<NormalizedBalanceWithCurrentPrice[]>([]);
   const [totalBalance, setTotalBalance] = useState<TotalBalance>({ totalFree: 0, totalStaked: 0 });
 
   const { mutate: getTotalBalance, isLoading: isLoadingTotalBalance } = useMutation({
@@ -38,21 +45,30 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cach
 
   const { mutate: getBalance, isLoading: isBalanceLoading } = useMutation({
     mutationFn: async () => {
-      //   const queryString = Object.entries(queryParams ?? {})
-      //     .filter(([_, value]) => value)
-      //     .map(([key, value]) => `${key}=${value}`)
-      //     .join('&');
-
       const url = `/api/portfolio/${slug}/balance`;
-      let fullUrl = url;
 
-      //   if (queryString.length) {
-      //     fullUrl = `${url}?${queryString}`;
-      //   }
+      const { data } = await axios.get<NormalizedBalanceWithCurrentPrice[]>(url);
 
-      const data = await axios.get<NormalizedBalanceWithCurrentPrice[]>(fullUrl);
+      setBalance(data);
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        return toast({
+          title: error.message,
+          description: error.response?.data,
+          variant: 'destructive',
+        });
+      }
+    },
+  });
 
-      setBalance(data.data);
+  const { mutate: getStakedBalance, isLoading: isStakedBalanceLoading } = useMutation({
+    mutationFn: async () => {
+      const url = `/api/portfolio/${slug}/balance?staked=true`;
+
+      const { data } = await axios.get<NormalizedBalanceWithCurrentPrice[]>(url);
+
+      setStakedBalance(data);
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -71,12 +87,21 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cach
     } else {
       setBalance(cachedBalance);
     }
+  }, [cachedBalance, getBalance]);
 
+  useEffect(() => {
+    if (!cachedStakedBalance) {
+      getStakedBalance();
+    } else {
+      setStakedBalance(cachedStakedBalance);
+    }
+  }, [cachedStakedBalance, getStakedBalance]);
+
+  useEffect(() => {
     if (!cachedTotalBalance) {
       getTotalBalance();
     } else {
       const { totalFree, totalStaked } = cachedTotalBalance;
-
       setTotalBalance({ totalFree: Number(totalFree), totalStaked: Number(totalStaked) });
     }
   }, [cachedBalance, cachedTotalBalance]);
@@ -98,10 +123,20 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cach
     return { top5assets, top5AssetsTotalBalance };
   };
 
+  console.log({ cachedStakedBalance, stakedBalance });
+
   return (
-    <article className="grid">
+    <article className="grid lg:grid-cols-2 gap-4">
       <AssetCard
         headline="Top 5 assets"
+        assets={getTop5Assets().top5assets}
+        isLoading={isBalanceLoading ?? false}
+        isBalanceVisible={true}
+        totalBalance={getTop5Assets().top5AssetsTotalBalance}
+      />
+
+      <AssetCard
+        headline="Don't know yet"
         assets={getTop5Assets().top5assets}
         isLoading={isBalanceLoading ?? false}
         isBalanceVisible={true}
@@ -115,6 +150,16 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({ slug, cach
         isBalanceVisible={true}
         totalBalance={totalBalance.totalFree}
       />
+
+      {stakedBalance.length > 0 && (
+        <AssetCard
+          headline="Staked assets"
+          assets={stakedBalance}
+          isLoading={isStakedBalanceLoading ?? false}
+          isBalanceVisible={true}
+          totalBalance={totalBalance.totalStaked}
+        />
+      )}
     </article>
   );
 };

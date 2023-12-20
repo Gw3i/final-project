@@ -29,6 +29,8 @@ const AssetCard: FC<AssetCardProps> = ({
   // TODO: Check if necessary
   const assetList = normalizeBalance(assets);
 
+  console.log({ assets });
+
   const getContentTpl = () => {
     return (
       <>
@@ -76,7 +78,7 @@ const AssetCard: FC<AssetCardProps> = ({
               !isLoading &&
               assetList.map(
                 (asset) =>
-                  !asset.isStaked && (
+                  Number(asset.value) !== 0 && (
                     <TableRow key={asset.name}>
                       <TableCell className="font-medium py-2">{asset.name}</TableCell>
                       <TableCell className="text-right py-2">

@@ -1,11 +1,10 @@
-import { getSecrets, getQueryParams, getBinanceBalance, getBinanceBalanceDetails } from '@/app/api/_utils';
+import { getBinanceBalance, getBinanceBalanceDetails, getQueryParams, getSecrets } from '@/app/api/_utils';
 import { QUERY_PARAMS_SORT_BY_VALUE, QUERY_PARAMS_SORT_ORDER_ASC } from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
 import { redis } from '@/lib/redis';
 import { NormalizedBalanceWithCurrentPrice } from '@/types';
 import { AxiosError } from 'axios';
 import { NextRequest } from 'next/server';
-
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
@@ -32,9 +31,30 @@ export async function GET(request: NextRequest) {
     const balance = await getBinanceBalance(apiKey, apiSecret);
 
     let { assets } = await getBinanceBalanceDetails(balance);
-    // TODO: Get staked assets from Binance
-    const stackedAssets: NormalizedBalanceWithCurrentPrice[] = [];
 
+    let freeAssets: NormalizedBalanceWithCurrentPrice[] = [];
+    let stakedAssets: NormalizedBalanceWithCurrentPrice[] = [];
+
+    for (let i = 0; i < assets.length; i++) {
+      const asset = assets[i];
+
+      if (!asset) return;
+
+      if (asset.isStaked) {
+        stakedAssets.push(asset);
+      } else {
+        freeAssets.push(asset);
+      }
+    }
+
+    // TODO: Get staked assets from Binance
+    let finalAssets: NormalizedBalanceWithCurrentPrice[] = [];
+
+    if (staked) {
+      finalAssets = stakedAssets;
+    } else {
+      finalAssets = freeAssets;
+    }
     if (sortBy === QUERY_PARAMS_SORT_BY_VALUE) {
       assets.sort((a, b) => {
         if (!a.totalPrice || !b.totalPrice) return 0;
@@ -55,9 +75,9 @@ export async function GET(request: NextRequest) {
     }
 
     // TODO: Add staked assets
-    await redis.hset(`balance:binance`, { freeAssets: assets, stackedAssets: [] });
+    await redis.hset(`balance:binance`, { freeAssets: assets, stakedAssets: [] });
 
-    return new Response(JSON.stringify(assets), { status: 200 });
+    return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {
     console.log(error);
 

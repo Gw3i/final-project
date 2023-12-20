@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const balanceWithTicker = await getKrakenBalanceDetails(apiKey, apiSecret);
 
     let freeAssets: NormalizedBalanceWithCurrentPrice[] = [];
-    let stackedAssets: NormalizedBalanceWithCurrentPrice[] = [];
+    let stakedAssets: NormalizedBalanceWithCurrentPrice[] = [];
 
     for (let i = 0; i < balanceWithTicker.assets.length; i++) {
       const asset = balanceWithTicker.assets[i];
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       if (!asset) return;
 
       if (asset.isStaked) {
-        stackedAssets.push(asset);
+        stakedAssets.push(asset);
       } else {
         freeAssets.push(asset);
       }
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     let finalAssets: NormalizedBalanceWithCurrentPrice[] = [];
 
     if (staked) {
-      finalAssets = stackedAssets;
+      finalAssets = stakedAssets;
     } else {
       finalAssets = freeAssets;
     }
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
       finalAssets = finalAssets.slice(startIndex, endIndex);
     }
 
-    await redis.hset(`balance:kraken`, { freeAssets, stackedAssets });
+    await redis.hset(`balance:kraken`, { freeAssets, stakedAssets });
 
     return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {
