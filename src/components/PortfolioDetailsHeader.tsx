@@ -43,7 +43,7 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedT
     } else {
       const { totalFree, totalStaked } = cachedTotalBalance;
 
-      setTotalBalance({ totalFree: parseInt(totalFree), totalStaked: parseInt(totalStaked) });
+      setTotalBalance({ totalFree: Number(totalFree), totalStaked: Number(totalStaked) });
     }
   }, [cachedTotalBalance]);
 
