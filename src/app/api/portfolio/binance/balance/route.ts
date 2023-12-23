@@ -1,4 +1,10 @@
-import { getBinanceBalance, getBinanceBalanceDetails, getQueryParams, getSecrets } from '@/app/api/_utils';
+import {
+  getBinanceBalance,
+  getBinanceBalanceDetails,
+  getBinanceStakedBalance,
+  getQueryParams,
+  getSecrets,
+} from '@/app/api/_utils';
 import { QUERY_PARAMS_SORT_BY_VALUE, QUERY_PARAMS_SORT_ORDER_ASC } from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
 import { redis } from '@/lib/redis';
@@ -29,8 +35,12 @@ export async function GET(request: NextRequest) {
     const { limit, page, sortBy, staked, sortOrder } = getQueryParams(url);
 
     const balance = await getBinanceBalance(apiKey, apiSecret);
+    const stakedBalance = await getBinanceStakedBalance(apiKey, apiSecret);
 
-    let { assets } = await getBinanceBalanceDetails(balance);
+    const { assets: freeBalance } = await getBinanceBalanceDetails(balance);
+    const { assets: lockedBalance } = await getBinanceBalanceDetails(stakedBalance);
+
+    let assets = [...freeBalance, ...lockedBalance];
 
     let freeAssets: NormalizedBalanceWithCurrentPrice[] = [];
     let stakedAssets: NormalizedBalanceWithCurrentPrice[] = [];
@@ -47,7 +57,6 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // TODO: Get staked assets from Binance
     let finalAssets: NormalizedBalanceWithCurrentPrice[] = [];
 
     if (staked) {
@@ -55,8 +64,9 @@ export async function GET(request: NextRequest) {
     } else {
       finalAssets = freeAssets;
     }
+
     if (sortBy === QUERY_PARAMS_SORT_BY_VALUE) {
-      assets.sort((a, b) => {
+      finalAssets.sort((a, b) => {
         if (!a.totalPrice || !b.totalPrice) return 0;
 
         if (sortOrder === QUERY_PARAMS_SORT_ORDER_ASC) {
@@ -71,11 +81,10 @@ export async function GET(request: NextRequest) {
       const startIndex = (parseInt(page) - 1) * parseInt(limit);
       const endIndex = parseInt(page) * parseInt(limit);
 
-      assets = assets.slice(startIndex, endIndex);
+      finalAssets = finalAssets.slice(startIndex, endIndex);
     }
 
-    // TODO: Add staked assets
-    await redis.hset(`balance:binance`, { freeAssets: assets, stakedAssets: [] });
+    await redis.hset(`balance:binance`, { freeAssets, stakedAssets });
 
     return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {

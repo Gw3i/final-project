@@ -123,8 +123,6 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({
     return { top5assets, top5AssetsTotalBalance };
   };
 
-  console.log({ cachedStakedBalance, stakedBalance });
-
   return (
     <article className="grid lg:grid-cols-2 gap-4">
       <AssetCard

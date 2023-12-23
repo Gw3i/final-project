@@ -8,6 +8,12 @@ export interface BinanceBalance {
   btcValuation: string;
 }
 
+export interface BinanceStakedBalance {
+  asset: string;
+  free: string;
+  isStaked: boolean;
+}
+
 export interface BinanceUserData {
   makerCommission: number;
   takerCommission: number;

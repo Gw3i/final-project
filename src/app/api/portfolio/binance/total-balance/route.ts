@@ -1,4 +1,4 @@
-import { getBinanceBalance, getBinanceBalanceDetails, getSecrets } from '@/app/api/_utils';
+import { getBinanceBalance, getBinanceBalanceDetails, getBinanceStakedBalance, getSecrets } from '@/app/api/_utils';
 import { getAuthSession } from '@/lib/auth';
 import { redis } from '@/lib/redis';
 import { NextRequest } from 'next/server';
@@ -24,9 +24,12 @@ export async function GET(request: NextRequest) {
     const { apiKey, apiSecret } = secrets;
 
     const balance = await getBinanceBalance(apiKey, apiSecret);
+    const stakedBalance = await getBinanceStakedBalance(apiKey, apiSecret);
 
     const { totalBalance } = await getBinanceBalanceDetails(balance);
-    const { totalFree, totalStaked } = totalBalance;
+    const { totalBalance: totalStakedBalance } = await getBinanceBalanceDetails(stakedBalance);
+    const { totalFree } = totalBalance;
+    const { totalStaked } = totalStakedBalance;
 
     await redis.hset(`totalBalance:binance`, { totalFree, totalStaked });
 
