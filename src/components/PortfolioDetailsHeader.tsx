@@ -73,6 +73,8 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedB
   });
 
   useEffect(() => {
+    console.log({ cachedBalance });
+
     if (!cachedBalance) {
       getBalance();
     } else {
@@ -137,7 +139,7 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedB
           <span className="mr-2">New order</span> <ExternalLink />
         </Link>
       </div>
-      <div className="mt-4">
+      <div className="mt-4 sm:grid sm:grid-cols-[minmax(0,1fr),minmax(0,1fr)]">
         <div>
           <h2 className="uppercase font-bold text-xl text-zinc-600">Allocation</h2>
           <div className="w-full h-[300px]">

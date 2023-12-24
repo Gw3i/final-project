@@ -26,7 +26,13 @@ const Page = async ({ params }: PageProps) => {
 
   return (
     <section>
-      {cachedTotalBalance && <PortfolioDetailsHeader slug={slug} cachedTotalBalance={cachedTotalBalance} />}
+      {cachedTotalBalance && (
+        <PortfolioDetailsHeader
+          slug={slug}
+          cachedTotalBalance={cachedTotalBalance}
+          cachedBalance={cachedBalance?.freeAssets ?? null}
+        />
+      )}
 
       <PortfolioStatisticCards
         slug={slug}

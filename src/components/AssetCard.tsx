@@ -1,8 +1,11 @@
+'use client';
+
 import { normalizeBalance } from '@/lib/utils/balance.util';
 import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
 import Link from 'next/link';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
+import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';
 
 interface AssetCardProps {
@@ -13,6 +16,7 @@ interface AssetCardProps {
   isBalanceVisible: boolean;
   totalBalance: number;
   hasLink?: boolean;
+  itemsAmountToRender?: number;
 }
 
 const AssetCard: FC<AssetCardProps> = ({
@@ -23,11 +27,17 @@ const AssetCard: FC<AssetCardProps> = ({
   isBalanceVisible,
   totalBalance,
   hasLink = false,
+  itemsAmountToRender,
 }) => {
   // TODO: Fix - Some Kraken assets have balance 0
+  const [visibleItems, setVisibleItems] = useState(itemsAmountToRender || 10);
 
-  // TODO: Check if necessary
   const assetList = normalizeBalance(assets);
+
+  const loadMoreAssets = () => {
+    // Increase the number of visible items by 10 when the "Load More" button is clicked
+    setVisibleItems((prevVisibleItems) => prevVisibleItems + (itemsAmountToRender ?? 10));
+  };
 
   const getContentTpl = () => {
     return (
@@ -74,7 +84,7 @@ const AssetCard: FC<AssetCardProps> = ({
 
             {assetList.length > 0 &&
               !isLoading &&
-              assetList.map(
+              assetList.slice(0, visibleItems).map(
                 (asset) =>
                   Number(asset.value) !== 0 && (
                     <TableRow key={asset.name}>
@@ -113,6 +123,12 @@ const AssetCard: FC<AssetCardProps> = ({
               )}
           </TableBody>
         </Table>
+
+        {visibleItems < assetList.length && (
+          <div className="flex justify-center mt-4">
+            <Button onClick={loadMoreAssets}>Load More</Button>
+          </div>
+        )}
       </>
     );
   };
