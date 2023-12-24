@@ -6,7 +6,8 @@ import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
-import { FC, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
+import { BalanceVisibilityContext } from './Providers';
 import { buttonVariants } from './ui/button';
 import { Skeleton } from './ui/skeleton';
 
@@ -16,6 +17,7 @@ interface PortfolioDetailsHeaderProps {
 }
 
 const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedTotalBalance }) => {
+  const { isBalanceVisible } = useContext(BalanceVisibilityContext);
   const [totalBalance, setTotalBalance] = useState<TotalBalance>({ totalFree: 0, totalStaked: 0 });
 
   const { mutate: getFreeTotalBalance, isLoading: isLoadingTotalBalance } = useMutation({
@@ -56,7 +58,8 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedT
           <Skeleton className="bg-zinc-500 w-[200px] h-[22px] rounded-md mb-[2px]" />
         ) : (
           <p className="w-full inline-flex justify-between gap-1">
-            <span>Free:</span> <span>${totalBalance.totalFree.toFixed(2)}</span>
+            <span>Free:</span>{' '}
+            {isBalanceVisible ? <span>${totalBalance.totalFree.toFixed(2)}</span> : <span>*******</span>}
           </p>
         )}
 
@@ -64,7 +67,8 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedT
           <Skeleton className="bg-zinc-500 w-[200px] h-[22px] rounded-md mb-[2px]" />
         ) : (
           <p className="w-full inline-flex justify-between gap-1">
-            <span>Staked:</span> <span>${totalBalance.totalStaked.toFixed(2)}</span>
+            <span>Staked:</span>{' '}
+            {isBalanceVisible ? <span>${totalBalance.totalStaked.toFixed(2)}</span> : <span>*******</span>}
           </p>
         )}
 
@@ -72,7 +76,12 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedT
           <Skeleton className="bg-zinc-500 w-[200px] h-[32px] rounded-md" />
         ) : (
           <p className="w-full inline-flex justify-between gap-1 font-semibold text-2xl">
-            <span>Total:</span> <span>${(totalBalance.totalFree + totalBalance.totalStaked).toFixed(2)}</span>
+            <span>Total:</span>{' '}
+            {isBalanceVisible ? (
+              <span>${(totalBalance.totalFree + totalBalance.totalStaked).toFixed(2)}</span>
+            ) : (
+              <span>$******</span>
+            )}
           </p>
         )}
       </div>

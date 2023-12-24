@@ -4,8 +4,9 @@ import { toast } from '@/hooks';
 import { CachedTotalBalance, Exchange, NormalizedBalanceWithCurrentPrice, TotalBalance } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
-import { FC, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import AssetCard from './AssetCard';
+import { BalanceVisibilityContext } from './Providers';
 
 interface PortfolioStatisticsCardsProps {
   slug: Exchange;
@@ -20,6 +21,7 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({
   cachedTotalBalance,
   cachedStakedBalance,
 }) => {
+  const { isBalanceVisible } = useContext(BalanceVisibilityContext);
   const [balance, setBalance] = useState<NormalizedBalanceWithCurrentPrice[]>([]);
   const [stakedBalance, setStakedBalance] = useState<NormalizedBalanceWithCurrentPrice[]>([]);
   const [totalBalance, setTotalBalance] = useState<TotalBalance>({ totalFree: 0, totalStaked: 0 });
@@ -129,7 +131,7 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({
         headline="Top 5 assets"
         assets={getTop5Assets().top5assets}
         isLoading={isBalanceLoading ?? false}
-        isBalanceVisible={true}
+        isBalanceVisible={isBalanceVisible}
         totalBalance={getTop5Assets().top5AssetsTotalBalance}
       />
 
@@ -137,7 +139,7 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({
         headline="Don't know yet"
         assets={getTop5Assets().top5assets}
         isLoading={isBalanceLoading ?? false}
-        isBalanceVisible={true}
+        isBalanceVisible={isBalanceVisible}
         totalBalance={getTop5Assets().top5AssetsTotalBalance}
       />
 
@@ -145,7 +147,7 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({
         headline="All assets"
         assets={balance}
         isLoading={isBalanceLoading ?? false}
-        isBalanceVisible={true}
+        isBalanceVisible={isBalanceVisible}
         totalBalance={totalBalance.totalFree}
       />
 
@@ -154,7 +156,7 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({
           headline="Staked assets"
           assets={stakedBalance}
           isLoading={isStakedBalanceLoading ?? false}
-          isBalanceVisible={true}
+          isBalanceVisible={isBalanceVisible}
           totalBalance={totalBalance.totalStaked}
         />
       )}

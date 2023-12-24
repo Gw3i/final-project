@@ -24,7 +24,6 @@ const Page = async ({ params }: PageProps) => {
 
   const cachedTotalBalance = (await redis.hgetall(`totalBalance:${slug}`)) as CachedTotalBalance | null;
 
-
   return (
     <section>
       {cachedTotalBalance && <PortfolioDetailsHeader slug={slug} cachedTotalBalance={cachedTotalBalance} />}
