@@ -47,7 +47,7 @@ const AssetCard: FC<AssetCardProps> = ({
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Asset</TableHead>
-              <TableHead className="text-right">Price</TableHead>
+              <TableHead className="hidden text-right sm:table-cell">Price</TableHead>
               <TableHead className="text-right">Balance</TableHead>
             </TableRow>
           </TableHeader>
@@ -78,9 +78,15 @@ const AssetCard: FC<AssetCardProps> = ({
                 (asset) =>
                   Number(asset.value) !== 0 && (
                     <TableRow key={asset.name}>
-                      <TableCell className="font-medium py-2">{asset.name}</TableCell>
-                      <TableCell className="text-right py-2">
-                        <p>${asset.currentPrice ? Number(asset.currentPrice).toFixed(5) : 'Not found'}</p>{' '}
+                      <TableCell className="hidden font-medium py-2 sm:table-cell">{asset.name}</TableCell>
+                      <TableCell className="hidden text-right py-2 sm:table-cell">
+                        <p>${asset.currentPrice ? Number(asset.currentPrice).toFixed(5) : 'Not found'}</p>
+                      </TableCell>
+                      <TableCell className="font-medium py-2 sm:hidden">
+                        <span>{asset.name}</span>
+                        <span>
+                          <p>${asset.currentPrice ? Number(asset.currentPrice).toFixed(5) : 'Not found'}</p>
+                        </span>
                       </TableCell>
                       <TableCell className="text-right py-2">
                         {/* TODO: Convert values and prices into integers */}
