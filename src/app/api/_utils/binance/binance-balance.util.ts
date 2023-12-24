@@ -111,7 +111,6 @@ export const getBinanceBalanceDetails = async (balances: BinanceBalance[] | Bina
       if (asset.asset === tickerSymbol) {
         const totalPrice = parseFloat(asset.free) * parseFloat(ticker.lastPrice);
 
-        // TODO: Add totalStaked
         if (isBinanceStakedBalance(asset)) {
           totalBalance.totalStaked = totalBalance.totalStaked + totalPrice;
         } else {
@@ -130,8 +129,6 @@ export const getBinanceBalanceDetails = async (balances: BinanceBalance[] | Bina
       }
     });
   });
-
-  console.log({ balanceWithDetails });
 
   return balanceWithDetails;
 };

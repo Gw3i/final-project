@@ -136,14 +136,6 @@ const PortfolioStatisticCards: FC<PortfolioStatisticsCardsProps> = ({
       />
 
       <AssetCard
-        headline="Don't know yet"
-        assets={getTop5Assets().top5assets}
-        isLoading={isBalanceLoading ?? false}
-        isBalanceVisible={isBalanceVisible}
-        totalBalance={getTop5Assets().top5AssetsTotalBalance}
-      />
-
-      <AssetCard
         headline="All assets"
         assets={balance}
         isLoading={isBalanceLoading ?? false}
