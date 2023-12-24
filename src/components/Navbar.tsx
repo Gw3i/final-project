@@ -36,9 +36,7 @@ const Navbar = async () => {
       </Link>
 
       <div className="flex items-center">
-        <div className="mt-[10px]">
-          <BalanceVisibilityButton />
-        </div>
+        <BalanceVisibilityButton />
       </div>
 
       <div>

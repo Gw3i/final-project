@@ -5,6 +5,8 @@ import { CreateApiKeyPayload } from '@/lib/validators/api-key.validator';
 import { Exchange } from '@/types/exchanges/exchange';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
+import { MoveUpRight } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from './ui/button';
@@ -19,7 +21,7 @@ interface Exchanges {
 }
 
 const KeyForm = () => {
-  const [exchange, setExchange] = useState('');
+  const [exchange, setExchange] = useState('binance');
   const [apiKey, setApiKey] = useState('');
   const [apiSecret, setApiSecret] = useState('');
   const router = useRouter();
@@ -62,18 +64,40 @@ const KeyForm = () => {
 
   return (
     <form onSubmit={(event) => event.preventDefault()} className="space-y-4">
-      <Select onValueChange={setExchange} defaultValue={exchange}>
-        <SelectTrigger>
-          <SelectValue placeholder="Select an exchange" />
-        </SelectTrigger>
-        <SelectContent>
-          {exchanges.map((exchange) => (
-            <SelectItem key={exchange.value} value={exchange.value}>
-              {exchange.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="w-full text-left">
+        <Select onValueChange={setExchange} defaultValue={exchange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select an exchange" />
+          </SelectTrigger>
+          <SelectContent>
+            {exchanges.map((exchange) => (
+              <SelectItem key={exchange.value} value={exchange.value}>
+                {exchange.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {exchange && (
+          <Button asChild variant="link">
+            <Link
+              className="flex items-center gap-[2px] text-xs"
+              target="_blank"
+              href={
+                exchange === 'binance'
+                  ? 'https://www.binance.com/en/support/faq/how-to-create-api-keys-on-binance-360002502072'
+                  : 'https://support.kraken.com/hc/en-us/articles/360000919966-How-to-create-an-API-key'
+              }
+            >
+              <span>
+                How to generate a <span className="inline-block first-letter:uppercase">{exchange}</span> API Key
+              </span>
+              <MoveUpRight width={16} height={16} />
+            </Link>
+          </Button>
+        )}
+      </div>
+
       <div className="text-left">
         <Label>API Key</Label>
         <Input name="api-key" id="api-key" type="text" onChange={(event) => setApiKey(event.target.value)} />

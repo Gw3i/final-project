@@ -9,7 +9,7 @@ const BalanceVisibilityButton = () => {
   const { isBalanceVisible, setIsBalanceVisible } = useContext(BalanceVisibilityContext);
 
   return (
-    <Button className="-mt-4 gap-1" variant="ghost" onClick={() => setIsBalanceVisible(!isBalanceVisible)}>
+    <Button className="gap-1" variant="ghost" onClick={() => setIsBalanceVisible(!isBalanceVisible)}>
       {isBalanceVisible ? (
         <>
           <EyeOffIcon />
