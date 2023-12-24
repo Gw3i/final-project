@@ -1,16 +1,15 @@
 'use client';
 
 import AssetCard from '@/components/AssetCard';
-import { Button } from '@/components/ui/button';
+import { BalanceVisibilityContext } from '@/components/Providers';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetTotalBalance } from '@/hooks';
 import { useGetAssetBalance } from '@/hooks/use-get-asset-balance';
 import { CreateBaseQueryParams } from '@/lib/validators/query-params.validator';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useContext } from 'react';
 
 const Page = () => {
-  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+  const { isBalanceVisible } = useContext(BalanceVisibilityContext);
 
   // TODO: Add cache when assets were loaded once
   // TODO: Move balance visibility to as Context
@@ -47,9 +46,9 @@ const Page = () => {
         </div>
 
         <div className="flex gap-1 items-center">
-          <Button className="-mt-4" variant="ghost" onClick={() => setIsBalanceVisible(!isBalanceVisible)}>
+          {/* <Button className="-mt-4" variant="ghost" onClick={() => setIsBalanceVisible(!isBalanceVisible)}>
             {isBalanceVisible ? <EyeOffIcon /> : <EyeIcon />}
-          </Button>
+          </Button> */}
 
           {isKrakenTotalBalanceLoading || isBinanceTotalBalanceLoading ? (
             <Skeleton className="bg-zinc-500 w-[100px] h-[32px] rounded-md mb-4" />

@@ -1,5 +1,6 @@
 import { getAuthSession } from '@/lib/auth';
 import Link from 'next/link';
+import BalanceVisibilityButton from './BalanceVisibilityButton';
 import UserNav from './UserNav';
 import { buttonVariants } from './ui/button';
 
@@ -7,7 +8,7 @@ const Navbar = async () => {
   const session = await getAuthSession();
 
   return (
-    <nav className="flex justify-between items-center px-4 py-2 pr-[15px] border-b border-b-slate-500">
+    <nav className="grid grid-cols-[1fr,auto,auto] items-center gap-2 px-4 py-2 pr-[15px] border-b border-b-slate-500">
       <Link href="/">
         <svg width="32" height="32" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           {' '}
@@ -33,6 +34,13 @@ const Navbar = async () => {
           </defs>{' '}
         </svg>
       </Link>
+
+      <div className="flex items-center">
+        <div className="mt-[10px]">
+          <BalanceVisibilityButton />
+        </div>
+      </div>
+
       <div>
         {session?.user ? (
           <UserNav session={session} />
