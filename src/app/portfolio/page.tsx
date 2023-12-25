@@ -1,6 +1,7 @@
 'use client';
 
 import AssetCard from '@/components/AssetCard';
+import ExchangeCard from '@/components/ExchangeCard';
 import { BalanceVisibilityContext } from '@/components/Providers';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetTotalBalance } from '@/hooks';
@@ -10,9 +11,6 @@ import { useContext } from 'react';
 
 const Page = () => {
   const { isBalanceVisible } = useContext(BalanceVisibilityContext);
-
-  // TODO: Add cache when assets were loaded once
-  // TODO: Move balance visibility to as Context
 
   const assetBalanceQueryParams: CreateBaseQueryParams = {
     page: '1',
@@ -38,7 +36,7 @@ const Page = () => {
   });
 
   return (
-    <section className="grid max-w-xl mx-auto mt-8">
+    <section className="grid mx-auto mt-8">
       <div className="grid grid-cols-[1fr,auto] items-start">
         <div>
           <h2 className="text-headline-small mb-4">Portfolio</h2>
@@ -46,26 +44,30 @@ const Page = () => {
         </div>
 
         <div className="flex gap-1 items-center">
-          {/* <Button className="-mt-4" variant="ghost" onClick={() => setIsBalanceVisible(!isBalanceVisible)}>
-            {isBalanceVisible ? <EyeOffIcon /> : <EyeIcon />}
-          </Button> */}
-
           {isKrakenTotalBalanceLoading || isBinanceTotalBalanceLoading ? (
             <Skeleton className="bg-zinc-500 w-[100px] h-[32px] rounded-md mb-4" />
           ) : (
             <p className="uppercase font-semibold mb-4 text-2xl">
               $
-              {isBalanceVisible ? (krakenTotalBalance.totalFree + binanceTotalBalance.totalFree).toFixed(2) : '*******'}
+              {isBalanceVisible
+                ? Number(krakenTotalBalance.totalFree + binanceTotalBalance.totalFree).toFixed(2)
+                : '*******'}
             </p>
           )}
         </div>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr),minmax(0,1fr)]">
+        {/* TODO: Loop trough all exchanges in DB */}
+        <ExchangeCard
+          exchange="binance"
+          totalBalance={binanceTotalBalance.totalFree}
+          isLoading={isLoadingBinanceBalance}
+        />
         <AssetCard
           exchangeName="Binance"
           assets={binanceBalance}
-          isLoading={isLoadingKrakenBalance}
+          isLoading={isLoadingBinanceBalance}
           isBalanceVisible={isBalanceVisible}
           totalBalance={binanceTotalBalance.totalFree}
           hasLink
@@ -73,7 +75,7 @@ const Page = () => {
         <AssetCard
           exchangeName="Kraken"
           assets={krakenBalance}
-          isLoading={isLoadingBinanceBalance}
+          isLoading={isLoadingKrakenBalance}
           isBalanceVisible={isBalanceVisible}
           totalBalance={krakenTotalBalance.totalFree}
           hasLink

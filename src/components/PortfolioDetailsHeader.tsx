@@ -94,7 +94,7 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedB
 
   return (
     <article>
-      <div className="grid grid-cols-[minmax(0,1fr),auto] grid-rows-[1fr,auto]">
+      <div className="grid grid-cols-[minmax(0,1fr),auto] grid-rows-[1fr,auto] -m-4 mb-2 px-4 pt-4 bg-zinc-100">
         <h1 className="uppercase font-bold mb-4 text-4xl">{slug.toUpperCase()}</h1>
 
         <div className="mb-4 text-md max-w-[200px]">
@@ -139,9 +139,11 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedB
           <span className="mr-2">New order</span> <ExternalLink />
         </Link>
       </div>
+
       <div className="mt-4 sm:grid sm:grid-cols-[minmax(0,1fr),minmax(0,1fr)]">
         <div>
           <h2 className="uppercase font-bold text-xl text-zinc-600">Allocation</h2>
+          <p className="text-zinc-400 text-sm">in $</p>
           <div className="w-full h-[300px]">
             <PieChart data={pieChartAllocationData} colorScheme="paired" />
           </div>
@@ -149,6 +151,8 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedB
 
         <div>
           <h2 className="uppercase font-bold text-xl text-zinc-600">Free assets</h2>
+          <p className="text-zinc-400 text-sm">in $</p>
+
           <div className="w-full h-[300px]">
             <PieChart data={pieChartBalanceData} colorScheme="green_blue" showLegend={false} />
           </div>
