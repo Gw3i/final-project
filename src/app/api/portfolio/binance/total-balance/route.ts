@@ -1,5 +1,6 @@
-import { getBinanceBalance, getBinanceBalanceDetails, getQueryParams, getSecrets } from '@/app/api/_utils';
+import { getBinanceBalance, getBinanceBalanceDetails, getBinanceStakedBalance, getSecrets } from '@/app/api/_utils';
 import { getAuthSession } from '@/lib/auth';
+import { redis } from '@/lib/redis';
 import { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -23,19 +24,19 @@ export async function GET(request: NextRequest) {
     const { apiKey, apiSecret } = secrets;
 
     const balance = await getBinanceBalance(apiKey, apiSecret);
+    const stakedBalance = await getBinanceStakedBalance(apiKey, apiSecret);
 
     const { totalBalance } = await getBinanceBalanceDetails(balance);
-    const { totalFree, totalStaked } = totalBalance;
-    const { staked } = getQueryParams(url);
+    const { totalBalance: totalStakedBalance } = await getBinanceBalanceDetails(stakedBalance);
+    const { totalFree } = totalBalance;
+    const { totalStaked } = totalStakedBalance;
 
-    if (staked) {
-      return new Response(JSON.stringify(totalStaked), { status: 200 });
-    }
+    await redis.hset(`totalBalance:binance`, { totalFree, totalStaked });
 
-    return new Response(JSON.stringify(totalFree), { status: 200 });
+    return new Response(JSON.stringify(totalBalance), { status: 200 });
   } catch (error) {
     // TODO: Enhance error messages
-    console.error('Internal Server Error:', error, { text: 'GetBalance' });
+    console.error('Internal Server Error:', error);
     return new Response('Internal Server Error', { status: 500, statusText: JSON.stringify(error) });
   }
 }

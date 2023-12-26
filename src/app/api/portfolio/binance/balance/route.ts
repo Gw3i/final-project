@@ -1,9 +1,16 @@
+import {
+  getBinanceBalance,
+  getBinanceBalanceDetails,
+  getBinanceStakedBalance,
+  getQueryParams,
+  getSecrets,
+} from '@/app/api/_utils';
 import { QUERY_PARAMS_SORT_BY_VALUE, QUERY_PARAMS_SORT_ORDER_ASC } from '@/constants/query-params.constants';
 import { getAuthSession } from '@/lib/auth';
+import { redis } from '@/lib/redis';
+import { NormalizedBalanceWithCurrentPrice } from '@/types';
 import { AxiosError } from 'axios';
 import { NextRequest } from 'next/server';
-import { getBinanceBalance, getBinanceBalanceDetails, getQueryParams } from '../../_utils';
-import { getSecrets } from '../../_utils/security.util';
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
@@ -28,11 +35,38 @@ export async function GET(request: NextRequest) {
     const { limit, page, sortBy, staked, sortOrder } = getQueryParams(url);
 
     const balance = await getBinanceBalance(apiKey, apiSecret);
+    const stakedBalance = await getBinanceStakedBalance(apiKey, apiSecret);
 
-    let { assets } = await getBinanceBalanceDetails(balance);
+    const { assets: freeBalance } = await getBinanceBalanceDetails(balance);
+    const { assets: lockedBalance } = await getBinanceBalanceDetails(stakedBalance);
+
+    let assets = [...freeBalance, ...lockedBalance];
+
+    let freeAssets: NormalizedBalanceWithCurrentPrice[] = [];
+    let stakedAssets: NormalizedBalanceWithCurrentPrice[] = [];
+
+    for (let i = 0; i < assets.length; i++) {
+      const asset = assets[i];
+
+      if (!asset) return;
+
+      if (asset.isStaked) {
+        stakedAssets.push(asset);
+      } else {
+        freeAssets.push(asset);
+      }
+    }
+
+    let finalAssets: NormalizedBalanceWithCurrentPrice[] = [];
+
+    if (staked) {
+      finalAssets = stakedAssets;
+    } else {
+      finalAssets = freeAssets;
+    }
 
     if (sortBy === QUERY_PARAMS_SORT_BY_VALUE) {
-      assets.sort((a, b) => {
+      finalAssets.sort((a, b) => {
         if (!a.totalPrice || !b.totalPrice) return 0;
 
         if (sortOrder === QUERY_PARAMS_SORT_ORDER_ASC) {
@@ -47,12 +81,12 @@ export async function GET(request: NextRequest) {
       const startIndex = (parseInt(page) - 1) * parseInt(limit);
       const endIndex = parseInt(page) * parseInt(limit);
 
-      assets = assets.slice(startIndex, endIndex);
+      finalAssets = finalAssets.slice(startIndex, endIndex);
     }
 
-    // TODO: Return totalBalance
+    await redis.hset(`balance:binance`, { freeAssets, stakedAssets });
 
-    return new Response(JSON.stringify(assets), { status: 200 });
+    return new Response(JSON.stringify(finalAssets), { status: 200 });
   } catch (error) {
     console.log(error);
 

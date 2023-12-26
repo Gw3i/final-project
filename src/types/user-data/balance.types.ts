@@ -13,3 +13,8 @@ export interface TotalBalance {
   totalStaked: number;
   totalFree: number;
 }
+
+export interface CachedTotalBalance {
+  totalStaked: string;
+  totalFree: string;
+}
