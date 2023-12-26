@@ -1,7 +1,6 @@
 'use client';
 
 import AssetCard from '@/components/AssetCard';
-import ExchangeCard from '@/components/ExchangeCard';
 import { BalanceVisibilityContext } from '@/components/Providers';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetTotalBalance } from '@/hooks';
@@ -58,8 +57,6 @@ const Page = () => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr),minmax(0,1fr)]">
-        {/* TODO: Loop trough all exchanges in DB */}
-        <ExchangeCard exchange="binance" totalBalance={binanceTotalBalance.totalFree} />
         <AssetCard
           exchangeName="Binance"
           assets={binanceBalance}
