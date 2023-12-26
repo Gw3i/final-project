@@ -59,11 +59,7 @@ const Page = () => {
 
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr),minmax(0,1fr)]">
         {/* TODO: Loop trough all exchanges in DB */}
-        <ExchangeCard
-          exchange="binance"
-          totalBalance={binanceTotalBalance.totalFree}
-          isLoading={isLoadingBinanceBalance}
-        />
+        <ExchangeCard exchange="binance" totalBalance={binanceTotalBalance.totalFree} />
         <AssetCard
           exchangeName="Binance"
           assets={binanceBalance}

@@ -3,14 +3,17 @@
 import { toast } from '@/hooks';
 import { Exchange, TotalBalance } from '@/types';
 import { PieChartData } from '@/types/pie-chart/pie-chart.types';
+import { Dialog } from '@radix-ui/react-dialog';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { FC, useContext, useEffect, useState } from 'react';
+import AddExchangeDialog from './AddExchangeDialog';
 import ExchangeCard from './ExchangeCard';
 import ExchangeCardSkeleton from './ExchangeCardSkeleton';
 import PieChart from './PieChart';
 import { BalanceVisibilityContext } from './Providers';
 import { Button } from './ui/button';
+import { DialogTrigger } from './ui/dialog';
 import { Skeleton } from './ui/skeleton';
 
 interface PortfolioCardProps {
@@ -75,7 +78,12 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ exchanges }) => {
             />
           ))}
 
-          <Button>Add exchange</Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>Add exchange</Button>
+            </DialogTrigger>
+            <AddExchangeDialog />
+          </Dialog>
         </div>
         <div className="grid justify-center w-full h-full grid-cols-1">
           <PieChart data={balancePieChartData} colorScheme="paired" />

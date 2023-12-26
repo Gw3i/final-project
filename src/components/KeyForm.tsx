@@ -113,7 +113,7 @@ const KeyForm = () => {
         type="submit"
         className="w-full"
       >
-        {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />} Setup API Connection
+        {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />} Add Exchange
       </Button>
     </form>
   );
