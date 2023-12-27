@@ -5,8 +5,7 @@ import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { FC } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { Button } from './ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/Avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +14,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
+} from './ui/Dropdown-menu';
+import { Button } from './ui/button';
 
 export interface UserNavProps {
   session: Session;
@@ -47,11 +47,11 @@ const UserNav: FC<UserNavProps> = ({ session }) => {
             <p className="text-xs leading-none text-muted-foreground mt-1">
               {session.user.hasSecret ? (
                 <span className="flex items-center gap-1 text-green-500">
-                  <CheckCircle2 className="w-4" /> Secrets added
+                  <CheckCircle2 className="w-4" /> Exchange added
                 </span>
               ) : (
                 <span className="flex items-center gap-1 text-red-500">
-                  <XCircle className="w-4" /> No Secrets added
+                  <XCircle className="w-4" /> No Exchange added
                 </span>
               )}
             </p>

@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
     await redis.hset(`totalBalance:binance`, { totalFree, totalStaked });
 
-    return new Response(JSON.stringify(totalBalance), { status: 200 });
+    return new Response(JSON.stringify({ totalFree, totalStaked }), { status: 200 });
   } catch (error) {
     // TODO: Enhance error messages
     console.error('Internal Server Error:', error);

@@ -58,6 +58,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ exchanges }) => {
       const balancesPromises = exchanges.map(async (exchange) => {
         const url = `/api/portfolio/${exchange}/total-balance`;
         const { data } = await axios.get<TotalBalance>(url);
+
         return { ...data, isLoading, exchange };
       });
 
