@@ -1,66 +1,90 @@
 'use client';
 
 import useTickers from '@/hooks/use-ticker';
-import { formatPrice } from '@/lib/utils/format-price';
 import { formatPriceChange } from '@/lib/utils/format-price-change';
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
+import { useEffect, useState } from 'react';
+import TickerListItem from './TickerListItem';
+import TickerListItemSkeleton from './TickerListItemSkeleton';
 
 const TickersTable = () => {
+  const [isAnimated, setIsAnimated] = useState(false);
+
   const symbols = [
     'BTCUSDT',
     'ETHUSDT',
     'BNBUSDT',
     'XRPUSDT',
-    'USDCUSDT',
+    'AVAXUSDT',
     'ADAUSDT',
     'SOLUSDT',
     'DOGEUSDT',
     'TRXUSDT',
-    'DAIUSDT',
+    'LINKUSDT',
     'DOTUSDT',
     'MATICUSDT',
     'LTCUSDT',
-    'BCHUSDT',
+    'ATOMUSDT',
   ];
 
   const tickerData = useTickers({ symbols, interval: 60000 });
 
-  return (
-    <>
-      <section>
-        {tickerData.isLoading && <p className="text-center">Loading...</p>}
+  const addAnimation = () => {
+    setIsAnimated(true);
+  };
 
-        {tickerData.tickers && !tickerData.isLoading && (
-          <Table>
-            <TableCaption>Top Cryptocurrency Ticker list</TableCaption>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Symbol</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead className="text-right">Change (24h)</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tickerData.tickers &&
-                tickerData.tickers.map((ticker) => (
-                  <TableRow key={ticker.symbol}>
-                    <TableCell className="font-medium">{ticker.symbol}</TableCell>
-                    <TableCell>{formatPrice(ticker.lastPrice)}</TableCell>
-                    <TableCell
-                      className={`text-right ${
-                        ticker.priceChangePercent.includes('-') ? 'text-red-500' : 'text-green-500'
-                      }`}
-                    >
-                      {ticker.priceChangePercent.includes('-') ? '' : '+'}
-                      {formatPriceChange(ticker.priceChangePercent)}%
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        )}
-      </section>
-    </>
+  useEffect(() => {
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      addAnimation();
+    }
+  }, []);
+
+  const duplicatedList = [...(tickerData.tickers ?? []), ...(tickerData.tickers ?? [])];
+
+  const renderSkeleton = () => {
+    const numbersArray = [];
+
+    for (let index = 0; index < 10; index++) {
+      numbersArray.push(index);
+    }
+    return numbersArray.map((n) => <TickerListItemSkeleton key={n} />);
+  };
+
+  return (
+    <article className="flex flex-col gap-3">
+      <ul className="ticker-list" data-animated={isAnimated} data-direction="left" data-duration="slow">
+        <div className="inner-scroller">
+          {tickerData.isLoading && renderSkeleton()}
+
+          {duplicatedList &&
+            !tickerData.isLoading &&
+            duplicatedList.map((ticker) => (
+              <TickerListItem
+                key={`${ticker.symbol}${Math.random()}`}
+                name={ticker.symbol.replace('USDT', '')}
+                price={ticker.lastPrice}
+                priceChange={`${formatPriceChange(ticker.priceChangePercent)}%`}
+              />
+            ))}
+        </div>
+      </ul>
+
+      <ul className="ticker-list" data-animated={isAnimated} data-direction="right" data-duration="medium">
+        <div className="inner-scroller">
+          {tickerData.isLoading && renderSkeleton()}
+
+          {duplicatedList &&
+            !tickerData.isLoading &&
+            duplicatedList.map((ticker) => (
+              <TickerListItem
+                key={`${ticker.symbol}${Math.random()}`}
+                name={ticker.symbol.replace('USDT', '')}
+                price={ticker.lastPrice}
+                priceChange={`${formatPriceChange(ticker.priceChangePercent)}%`}
+              />
+            ))}
+        </div>
+      </ul>
+    </article>
   );
 };
 

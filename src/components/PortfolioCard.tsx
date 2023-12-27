@@ -94,7 +94,7 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ exchanges }) => {
   const total = balancePieChartData.reduce((prev, current) => prev + current.value, 0);
 
   return (
-    <section className="bg-transparent border-2 border-gray-300 rounded-[10px] py-6 px-4">
+    <section className="bg-transparent border border-gray-300 rounded-[10px] py-6 px-4">
       <h1 className="text-4xl font-bold mb-2">Portfolio</h1>
       <div className="grid sm:grid-cols-[minmax(0,1fr),minmax(0,1fr)]">
         <div className="grid gap-2">

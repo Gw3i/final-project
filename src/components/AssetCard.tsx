@@ -2,6 +2,7 @@
 
 import { normalizeBalance } from '@/lib/utils/balance.util';
 import { NormalizedBalanceWithCurrentPrice } from '@/types/user-data/balance.types';
+import Image from 'next/image';
 import Link from 'next/link';
 import { FC, useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/Table';
@@ -35,8 +36,26 @@ const AssetCard: FC<AssetCardProps> = ({
   const assetList = normalizeBalance(assets);
 
   const loadMoreAssets = () => {
-    // Increase the number of visible items by 10 when the "Load More" button is clicked
     setVisibleItems((prevVisibleItems) => prevVisibleItems + (itemsAmountToRender ?? 10));
+  };
+
+  const showIcon = (assetName: string) => {
+    const url = `/icons/${assetName.toLowerCase()}.svg`;
+    const placeholderUrl = '/icons/generic.svg';
+
+    return (
+      <Image
+        src={url}
+        width={20}
+        height={20}
+        alt={`${assetName} icon`}
+        onError={(error) => {
+          const imgElement = error.target as HTMLImageElement;
+
+          imgElement.src = placeholderUrl;
+        }}
+      />
+    );
   };
 
   const getContentTpl = () => {
@@ -68,7 +87,7 @@ const AssetCard: FC<AssetCardProps> = ({
                   <TableCell className="font-medium ">
                     <Skeleton className="bg-zinc-500 w-[40px] h-[20px] rounded-md" />
                   </TableCell>
-                  <TableCell className="">
+                  <TableCell>
                     <div className="flex justify-end">
                       <Skeleton className="bg-zinc-500 w-[100px] h-[20px] rounded-md" />
                     </div>
@@ -88,19 +107,25 @@ const AssetCard: FC<AssetCardProps> = ({
                 (asset) =>
                   Number(asset.value) !== 0 && (
                     <TableRow key={asset.name}>
-                      <TableCell className="hidden font-medium py-2 sm:table-cell">{asset.name}</TableCell>
+                      <TableCell className="hidden font-medium py-2 sm:table-cell">
+                        <span className="inline-flex gap-1 items-center">
+                          {showIcon(asset.name)}
+                          <span>{asset.name}</span>
+                        </span>
+                      </TableCell>
                       <TableCell className="hidden text-right py-2 sm:table-cell">
                         <p>${asset.currentPrice ? Number(asset.currentPrice).toFixed(5) : 'Not found'}</p>
                       </TableCell>
                       <TableCell className="font-medium py-2 sm:hidden">
-                        <span>{asset.name}</span>
+                        <span className="inline-flex gap-1 items-center">
+                          {showIcon(asset.name)}
+                          <span>{asset.name}</span>
+                        </span>
                         <span>
                           <p>${asset.currentPrice ? Number(asset.currentPrice).toFixed(5) : 'Not found'}</p>
                         </span>
                       </TableCell>
                       <TableCell className="text-right py-2">
-                        {/* TODO: Convert values and prices into integers */}
-                        {/* TODO: Trim total when something like 30.05000000000000 */}
                         {asset.totalPrice && (
                           <div>
                             <p className="font-semibold">
@@ -138,12 +163,12 @@ const AssetCard: FC<AssetCardProps> = ({
       {hasLink ? (
         <Link
           href={`/portfolio/${exchangeName?.toLowerCase()}`}
-          className="bg-transparent  border-2 border-gray-300 rounded-[10px] py-6 px-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-50 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
+          className="bg-transparent  border border-gray-300 rounded-[10px] py-6 px-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-50 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
         >
           {getContentTpl()}
         </Link>
       ) : (
-        <div className="bg-transparent  border-2 border-gray-300 rounded-[10px] py-6 px-4">{getContentTpl()}</div>
+        <div className="bg-transparent  border border-gray-300 rounded-[10px] py-6 px-4">{getContentTpl()}</div>
       )}
     </>
   );
