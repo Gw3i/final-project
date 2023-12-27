@@ -59,7 +59,7 @@ const TickersTable = () => {
             !tickerData.isLoading &&
             duplicatedList.map((ticker) => (
               <TickerListItem
-                key={ticker.symbol}
+                key={`${ticker.symbol}${Math.random()}`}
                 name={ticker.symbol.replace('USDT', '')}
                 price={ticker.lastPrice}
                 priceChange={`${formatPriceChange(ticker.priceChangePercent)}%`}
@@ -76,7 +76,7 @@ const TickersTable = () => {
             !tickerData.isLoading &&
             duplicatedList.map((ticker) => (
               <TickerListItem
-                key={ticker.symbol}
+                key={`${ticker.symbol}${Math.random()}`}
                 name={ticker.symbol.replace('USDT', '')}
                 price={ticker.lastPrice}
                 priceChange={`${formatPriceChange(ticker.priceChangePercent)}%`}
