@@ -2,6 +2,7 @@ import { getAuthSession } from '@/lib/auth';
 import Link from 'next/link';
 import BalanceVisibilityButton from './BalanceVisibilityButton';
 import UserNav from './UserNav';
+import { Badge } from './ui/badge';
 import { buttonVariants } from './ui/button';
 
 const Navbar = async () => {
@@ -39,7 +40,9 @@ const Navbar = async () => {
         <BalanceVisibilityButton />
       </div>
 
-      <div>
+      <div className="grid grid-cols-[auto,1fr] gap-2">
+        <Badge>BETA</Badge>
+
         {session?.user ? (
           <UserNav session={session} />
         ) : (

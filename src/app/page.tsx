@@ -16,7 +16,7 @@ export default async function Home() {
     <div className="grid gap-8 mt-8">
       {secrets.length > 0 && <PortfolioCard exchanges={exchanges} />}
 
-      <AddKey />
+      {secrets.length === 0 && <AddKey />}
 
       <section>
         <h2 className="text-headline-small mb-4">Ticker</h2>
