@@ -15,7 +15,7 @@ const ExchangeCard: FC<ExchangeCardProps> = ({ exchange, totalBalance }) => {
     <article className="grid h-fit">
       <Link
         href={`/portfolio/${exchange?.toLowerCase()}`}
-        className="bg-transparent border-2 border-gray-300 rounded-[10px] p-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-50 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
+        className="bg-transparent border border-gray-300 rounded-[10px] p-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-50 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
       >
         <div className="grid uppercase font-semibold text-2xl">
           <p>{exchange.toUpperCase()}</p>

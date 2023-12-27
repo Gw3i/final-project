@@ -138,12 +138,12 @@ const AssetCard: FC<AssetCardProps> = ({
       {hasLink ? (
         <Link
           href={`/portfolio/${exchangeName?.toLowerCase()}`}
-          className="bg-transparent  border-2 border-gray-300 rounded-[10px] py-6 px-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-50 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
+          className="bg-transparent  border border-gray-300 rounded-[10px] py-6 px-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-50 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
         >
           {getContentTpl()}
         </Link>
       ) : (
-        <div className="bg-transparent  border-2 border-gray-300 rounded-[10px] py-6 px-4">{getContentTpl()}</div>
+        <div className="bg-transparent  border border-gray-300 rounded-[10px] py-6 px-4">{getContentTpl()}</div>
       )}
     </>
   );

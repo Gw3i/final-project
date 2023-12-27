@@ -18,7 +18,7 @@ export default async function Home() {
 
       {secrets.length === 0 && <AddKey />}
 
-      <section>
+      <section className="overflow-hidden">
         <h2 className="text-headline-small mb-4">Ticker</h2>
         <TickersTable />
       </section>

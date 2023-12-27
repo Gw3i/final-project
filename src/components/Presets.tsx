@@ -12,7 +12,7 @@ const Presets: FC<PresetsProps> = ({ hasSecret }) => {
   return (
     <article className="grid grid-cols-[minmax(0,300px),minmax(0,300px)] gap-4 justify-center">
       <Link
-        className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
+        className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
         href="/auto-invest"
@@ -22,7 +22,7 @@ const Presets: FC<PresetsProps> = ({ hasSecret }) => {
       </Link>
 
       <Link
-        className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
+        className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
         href="index-invest"
@@ -32,7 +32,7 @@ const Presets: FC<PresetsProps> = ({ hasSecret }) => {
       </Link>
 
       <Link
-        className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
+        className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
         href="range"
@@ -42,7 +42,7 @@ const Presets: FC<PresetsProps> = ({ hasSecret }) => {
       </Link>
 
       <Link
-        className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
+        className={`flex flex-col justify-center items-center gap-2 py-12 text-center rounded-md border border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground focus-visible:border-primary active:border-primary outline-none ${
           !hasSecret ? 'pointer-events-none text-muted-foreground' : 'text-foreground'
         }`}
         href="/latest"
