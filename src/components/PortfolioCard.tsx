@@ -65,15 +65,6 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ exchanges }) => {
 
       setTotalBalances(balances);
     },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        return toast({
-          title: error.message,
-          description: error.response?.data,
-          variant: 'destructive',
-        });
-      }
-    },
   });
 
   useEffect(() => {
@@ -99,8 +90,8 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ exchanges }) => {
   const total = balancePieChartData.reduce((prev, current) => prev + current.value, 0);
 
   return (
-    <section className="bg-transparent border border-gray-300 rounded-[10px] py-6 px-4 min-w-[342px]">
-      <h1 className="text-4xl font-bold mb-2">Portfolio</h1>
+    <section className="bg-transparent border border-gray-300 rounded-[10px] py-6 px-4 shadow-md min-w-[342px]">
+      <h1 className="text-4xl font-bold mb-2 font-gambetta-bold">Portfolio</h1>
       <div className="grid sm:grid-cols-[minmax(0,1fr),minmax(0,1fr)]">
         <div className="grid gap-2">
           {isLoading && exchanges.map((_, index) => <ExchangeCardSkeleton key={index} />)}

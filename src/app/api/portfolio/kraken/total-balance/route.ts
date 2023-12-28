@@ -1,9 +1,8 @@
 import { getKrakenBalanceDetails, getSecrets } from '@/app/api/_utils';
 import { getAuthSession } from '@/lib/auth';
 import { redis } from '@/lib/redis';
-import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getAuthSession();
 

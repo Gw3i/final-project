@@ -10,7 +10,7 @@ interface TickerListItemProps {
 
 const TickerListItem: FC<TickerListItemProps> = ({ name, price, priceChange }) => {
   return (
-    <li className="grid grid-cols-[1fr,auto] gap-2 items-center bg-transparent border border-gray-300 rounded-[10px] p-2">
+    <li className="my-1 shadow-sm grid grid-cols-[1fr,auto] gap-2 items-center bg-transparent border border-gray-300 rounded-[10px] p-2">
       <div>
         <div className="flex gap-1">
           <Image src={`/icons/${name}.svg`} className="w-[20px] h-[20px]" width={20} height={20} alt={`${name} icon`} />
