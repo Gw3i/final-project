@@ -97,8 +97,6 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedB
   });
 
   useEffect(() => {
-    console.log({ cachedBalance });
-
     if (!cachedBalance) {
       getBalance();
     } else {

@@ -13,8 +13,6 @@ export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
 const Page = async ({ params }: PageProps) => {
-  // TODO: Add skeleton
-
   const { slug } = params;
 
   const cachedBalance = (await redis.hgetall(`balance:${slug}`)) as {
