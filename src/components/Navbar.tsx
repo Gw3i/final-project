@@ -2,9 +2,11 @@ import { getAuthSession } from '@/lib/auth';
 import Link from 'next/link';
 import BalanceVisibilityButton from './BalanceVisibilityButton';
 import Logo from './Logo';
+import SignInDialog from './SignInDialog';
 import UserNav from './UserNav';
 import { Badge } from './ui/badge';
-import { buttonVariants } from './ui/button';
+import { Button } from './ui/button';
+import { Dialog, DialogTrigger } from './ui/dialog';
 
 const Navbar = async () => {
   const session = await getAuthSession();
@@ -22,9 +24,12 @@ const Navbar = async () => {
         {session?.user ? (
           <UserNav session={session} />
         ) : (
-          <Link className={buttonVariants({ variant: 'default' })} href="/sign-in">
-            Sign In
-          </Link>
+          <Dialog>
+            <DialogTrigger>
+              <Button>Sign In</Button>
+            </DialogTrigger>
+            <SignInDialog />
+          </Dialog>
         )}
       </div>
     </nav>
