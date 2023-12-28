@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Providers from '@/components/Providers';
+import TransitionContainer from '@/components/TransitionContainer';
 import { Toaster } from '@/components/ui/Toaster';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -23,7 +24,9 @@ export default function RootLayout({ children, authModal }: { children: React.Re
 
           {authModal}
 
-          <main className={`${inter.className} p-4`}>{children}</main>
+          <main className={`${inter.className} p-4`}>
+            <TransitionContainer>{children}</TransitionContainer>
+          </main>
           <Toaster />
         </Providers>
       </body>

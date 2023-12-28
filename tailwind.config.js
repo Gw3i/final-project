@@ -96,6 +96,10 @@ module.exports = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      fontFamily: {
+        gambetta: 'Gambetta-Medium, Roboto, Helvetica, Arial, sans-serif',
+        'gambetta-bold': 'Gambetta-Bold, Roboto, Helvetica, Arial, sans-serif',
+      },
       keyframes: {
         'accordion-down': {
           from: { height: 0 },

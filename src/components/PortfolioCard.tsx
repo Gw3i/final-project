@@ -3,7 +3,6 @@
 import { toast } from '@/hooks';
 import { Exchange, NormalizedBalanceWithCurrentPrice, TotalBalance } from '@/types';
 import { PieChartData } from '@/types/pie-chart/pie-chart.types';
-import { Dialog } from '@radix-ui/react-dialog';
 import { useMutation } from '@tanstack/react-query';
 import axios, { AxiosError } from 'axios';
 import { FC, useContext, useEffect, useState } from 'react';
@@ -14,7 +13,7 @@ import LoadingSpinner from './LoadingSpinner';
 import PieChart from './PieChart';
 import { BalanceVisibilityContext } from './Providers';
 import { Button } from './ui/button';
-import { DialogTrigger } from './ui/dialog';
+import { Dialog, DialogTrigger } from './ui/dialog';
 import { Skeleton } from './ui/skeleton';
 
 interface PortfolioCardProps {
@@ -83,10 +82,16 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ exchanges }) => {
   }, []);
 
   const balancePieChartData = totalBalances.map((balance) => {
-    const data: PieChartData = {
-      id: balance.exchange,
-      value: Number((balance.totalFree + balance.totalStaked).toFixed(2)),
-    };
+    let data: PieChartData = { id: '', value: 0 };
+
+    if (!isBalanceVisible) {
+      data = { id: balance.exchange, value: 1111 };
+    } else {
+      data = {
+        id: balance.exchange,
+        value: Number((balance.totalFree + balance.totalStaked).toFixed(2)),
+      };
+    }
 
     return data;
   });
@@ -94,18 +99,19 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ exchanges }) => {
   const total = balancePieChartData.reduce((prev, current) => prev + current.value, 0);
 
   return (
-    <section className="bg-transparent border border-gray-300 rounded-[10px] py-6 px-4">
+    <section className="bg-transparent border border-gray-300 rounded-[10px] py-6 px-4 min-w-[342px]">
       <h1 className="text-4xl font-bold mb-2">Portfolio</h1>
       <div className="grid sm:grid-cols-[minmax(0,1fr),minmax(0,1fr)]">
         <div className="grid gap-2">
           {isLoading && exchanges.map((_, index) => <ExchangeCardSkeleton key={index} />)}
-          {totalBalances.map((exchange) => (
-            <ExchangeCard
-              key={exchange.exchange}
-              exchange={exchange.exchange}
-              totalBalance={Number(exchange.totalFree + exchange.totalStaked)}
-            />
-          ))}
+          {!isLoading &&
+            totalBalances.map((exchange) => (
+              <ExchangeCard
+                key={exchange.exchange}
+                exchange={exchange.exchange}
+                totalBalance={Number(exchange.totalFree + exchange.totalStaked)}
+              />
+            ))}
 
           <Dialog>
             <DialogTrigger asChild>
