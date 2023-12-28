@@ -15,13 +15,6 @@ export default async function Home() {
 
   if (!session?.user) redirect('/sign-in');
 
-  // const cachedBalance = (await redis.hgetall(`balance:${slug}`)) as {
-  //   freeAssets: NormalizedBalanceWithCurrentPrice[];
-  //   stakedAssets: NormalizedBalanceWithCurrentPrice[];
-  // } | null;
-
-  // const cachedTotalBalance = (await redis.hgetall(`totalBalance:${slug}`)) as CachedTotalBalance | null;
-
   return (
     <>
       <div className="grid gap-8 mt-8">

@@ -36,7 +36,6 @@ export async function GET(request: NextRequest) {
     return new Response(JSON.stringify({ totalFree, totalStaked }), { status: 200 });
   } catch (error) {
     // TODO: Enhance error messages
-    console.error('Internal Server Error:', error);
     return new Response('Internal Server Error', { status: 500, statusText: JSON.stringify(error) });
   }
 }

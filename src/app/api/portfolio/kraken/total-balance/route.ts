@@ -1,9 +1,8 @@
 import { getKrakenBalanceDetails, getSecrets } from '@/app/api/_utils';
 import { getAuthSession } from '@/lib/auth';
 import { redis } from '@/lib/redis';
-import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getAuthSession();
 
@@ -28,8 +27,7 @@ export async function GET(request: NextRequest) {
 
     return new Response(JSON.stringify(totalBalance), { status: 200 });
   } catch (error) {
-    // TODO: Enhance error messages
-    console.error('Internal Server Error:', error);
+    // TODO: Enhance error message
     return new Response('Internal Server Error', { status: 500, statusText: JSON.stringify(error) });
   }
 }

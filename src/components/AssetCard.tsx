@@ -103,48 +103,49 @@ const AssetCard: FC<AssetCardProps> = ({
 
             {assetList.length > 0 &&
               !isLoading &&
-              assetList.slice(0, visibleItems).map(
-                (asset) =>
-                  Number(asset.value) !== 0 && (
-                    <TableRow key={asset.name}>
-                      <TableCell className="hidden font-medium py-2 sm:table-cell">
-                        <span className="inline-flex gap-1 items-center">
-                          {showIcon(asset.name)}
-                          <span>{asset.name}</span>
-                        </span>
-                      </TableCell>
-                      <TableCell className="hidden text-right py-2 sm:table-cell">
-                        <p>${asset.currentPrice ? Number(asset.currentPrice).toFixed(5) : 'Not found'}</p>
-                      </TableCell>
-                      <TableCell className="font-medium py-2 sm:hidden">
-                        <span className="inline-flex gap-1 items-center">
-                          {showIcon(asset.name)}
-                          <span>{asset.name}</span>
-                        </span>
-                        <span>
+              assetList.slice(0, visibleItems).map((asset) =>
+                asset.totalPrice
+                  ? Number(asset.value) !== 0 && (
+                      <TableRow key={asset.name}>
+                        <TableCell className="hidden font-medium py-2 sm:table-cell">
+                          <span className="inline-flex gap-1 items-center">
+                            {showIcon(asset.name)}
+                            <span>{asset.name}</span>
+                          </span>
+                        </TableCell>
+                        <TableCell className="hidden text-right py-2 sm:table-cell">
                           <p>${asset.currentPrice ? Number(asset.currentPrice).toFixed(5) : 'Not found'}</p>
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right py-2">
-                        {asset.totalPrice && (
-                          <div>
-                            <p className="font-semibold">
-                              {isBalanceVisible ? <span>${asset.totalPrice.toFixed(2)}</span> : <span>******</span>}
-                            </p>
-                            <p>
-                              {isBalanceVisible ? (
-                                <span>
-                                  {asset.value} {asset.name}
-                                </span>
-                              ) : (
-                                <span>*********</span>
-                              )}
-                            </p>
-                          </div>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ),
+                        </TableCell>
+                        <TableCell className="font-medium py-2 sm:hidden">
+                          <span className="inline-flex gap-1 items-center">
+                            {showIcon(asset.name)}
+                            <span>{asset.name}</span>
+                          </span>
+                          <span>
+                            <p>${asset.currentPrice ? Number(asset.currentPrice).toFixed(5) : 'Not found'}</p>
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-right py-2">
+                          {asset.totalPrice && (
+                            <div>
+                              <p className="font-semibold">
+                                {isBalanceVisible ? <span>${asset.totalPrice.toFixed(2)}</span> : <span>******</span>}
+                              </p>
+                              <p>
+                                {isBalanceVisible ? (
+                                  <span>
+                                    {asset.value} {asset.name}
+                                  </span>
+                                ) : (
+                                  <span>*********</span>
+                                )}
+                              </p>
+                            </div>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  : '',
               )}
           </TableBody>
         </Table>
@@ -163,12 +164,14 @@ const AssetCard: FC<AssetCardProps> = ({
       {hasLink ? (
         <Link
           href={`/portfolio/${exchangeName?.toLowerCase()}`}
-          className="bg-transparent  border border-gray-300 rounded-[10px] py-6 px-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-50 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
+          className="shadow-sm h-fit bg-transparent border border-gray-300 rounded-[10px] py-6 px-4 hover:border-gray-200 hover:bg-gray-30 hover:bg-opacity-50 focus-visible:bg-gray-100 active:bg-gray-100 focus-visible:bg-opacity-40 active:bg-opacity-40 transition-colors"
         >
           {getContentTpl()}
         </Link>
       ) : (
-        <div className="bg-transparent  border border-gray-300 rounded-[10px] py-6 px-4">{getContentTpl()}</div>
+        <div className="shadow-sm h-fit bg-transparent border border-gray-300 rounded-[10px] py-6 px-4">
+          {getContentTpl()}
+        </div>
       )}
     </>
   );

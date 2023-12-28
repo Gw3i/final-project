@@ -5,9 +5,9 @@ import {
 } from '@/types/user-data/kraken-user-data.types';
 import { Kraken } from 'node-kraken-api';
 
+import { TotalBalance } from '@/types';
 import { normalizeKrakenPairs } from '.';
 import { STACKED_ASSETS_ENDING } from '../../_constants/kraken.constants';
-import { TotalBalance } from '@/types';
 
 interface KrakenSymbolWithName {
   krakenSymbol: string;
@@ -75,6 +75,10 @@ export const getKrakenBalanceDetails = async (apiKey: string, apiSecret: string)
         totalBalance.totalStaked = totalBalance.totalStaked + (totalPrice ?? 0);
       } else {
         totalBalance.totalFree = totalBalance.totalFree + (totalPrice ?? 0);
+      }
+
+      if (assetName === 'XBT') {
+        assetName = 'BTC';
       }
 
       return { name: assetName, value: asset.value, currentPrice, isStaked, totalPrice };

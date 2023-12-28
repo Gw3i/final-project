@@ -70,13 +70,12 @@ export async function POST(request: NextRequest, response: NextResponse) {
 
         return response.data;
       } catch (error) {
-        // Handle any errors that may occur during the request
         console.error('Error creating Auto-Invest plan:', error);
         throw error;
       }
     };
 
-    const secrets = await getSecrets(session);
+    const secrets = await getSecrets(session, 'binance');
 
     if (!secrets) {
       return new Response('No API Key or Secret found. Please add API Key and API Secret or contact support', {

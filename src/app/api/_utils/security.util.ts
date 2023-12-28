@@ -51,7 +51,7 @@ export const getSecrets = async (session: Session, exchange: Exchange) => {
     throw new Error('Secret could not be retrieved.');
   }
 
-  const apiKeyEncrypted = encryptedApiKeyWithIV.slice(32); // Remove the IV from the ciphertext
+  const apiKeyEncrypted = encryptedApiKeyWithIV.slice(32);
   const apiKey = decrypt(apiKeyEncrypted, secretKey, iv);
   const apiSecret = decrypt(encryptedApiSecret, secretKey, iv);
 

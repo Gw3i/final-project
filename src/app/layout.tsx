@@ -11,8 +11,9 @@ export const dynamic = 'force-dynamic';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Trading Automation',
-  description: 'Naming in progress...',
+  title: 'FolioOne',
+  description:
+    'Unleash the Power of Seamless Crypto Management - Your All-in-One Hub for Tracking Portfolios and Analyzing Data across Diverse Exchanges!',
 };
 
 export default function RootLayout({ children, authModal }: { children: React.ReactNode; authModal: React.ReactNode }) {

@@ -3,13 +3,11 @@
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
-import Link from 'next/link';
 import { FC } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/Avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -57,12 +55,6 @@ const UserNav: FC<UserNavProps> = ({ session }) => {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <Link href="/portfolio">Portfolio</Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="cursor-pointer" onSelect={logout}>
           Log out

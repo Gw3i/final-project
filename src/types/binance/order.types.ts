@@ -1,7 +1,7 @@
 export interface AcknowledgementResponse {
   symbol: string;
   orderId: number;
-  orderListId: number; // Unless OCO, value will be -1
+  orderListId: number;
   clientOrderId: string;
   transactTime: number;
 }
