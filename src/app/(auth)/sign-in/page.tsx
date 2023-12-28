@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const Page = () => {
   return (
-    <section className="w-full relative grid gap-4 pt-8 text-center sm:px-8 sm:max-w-[52rem] md:px-10 lg:px-12">
+    <section className="w-full relative grid gap-2 pt-8 text-center sm:px-8 sm:max-w-[52rem] md:px-10 lg:px-12">
       <div className="hidden absolute -z-10 md:block md:-right-[380px] lg:-right-[520px] xl:-right-[768px] animate-spin logo-spin-duration">
         <Logo width="700" height="700" />
       </div>
@@ -17,7 +17,7 @@ const Page = () => {
         across Diverse Exchanges!
       </h2>
 
-      <div className="mt-8 flex w-full flex-col justify-center gap-2 sm:w-[350px]">
+      <div className="mt-10 flex w-full flex-col justify-center gap-2 sm:w-[350px]">
         <div className="flex flex-col space-y-1 text-left">
           <h1 className="text-2xl font-semibold tracking-tight">Create an account or login</h1>
         </div>
