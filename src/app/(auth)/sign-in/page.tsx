@@ -17,7 +17,7 @@ const Page = () => {
         across Diverse Exchanges!
       </h2>
 
-      <div className="mt-10 flex w-full flex-col justify-center gap-2 sm:w-[350px]">
+      <div className="mt-16 flex w-full flex-col justify-center gap-2 sm:w-[350px]">
         <div className="flex flex-col space-y-1 text-left">
           <h1 className="text-2xl font-semibold tracking-tight">Create an account or login</h1>
         </div>
