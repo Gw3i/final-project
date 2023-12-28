@@ -82,10 +82,16 @@ const PortfolioCard: FC<PortfolioCardProps> = ({ exchanges }) => {
   }, []);
 
   const balancePieChartData = totalBalances.map((balance) => {
-    const data: PieChartData = {
-      id: balance.exchange,
-      value: Number((balance.totalFree + balance.totalStaked).toFixed(2)),
-    };
+    let data: PieChartData = { id: '', value: 0 };
+
+    if (!isBalanceVisible) {
+      data = { id: balance.exchange, value: 1111 };
+    } else {
+      data = {
+        id: balance.exchange,
+        value: Number((balance.totalFree + balance.totalStaked).toFixed(2)),
+      };
+    }
 
     return data;
   });

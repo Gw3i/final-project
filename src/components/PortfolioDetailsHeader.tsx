@@ -34,6 +34,30 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedB
     value: Number(asset.totalPrice?.toFixed(2)),
   }));
 
+  const calculateAllocationChartData = pieChartAllocationData.map((allocation) => {
+    let data: PieChartData = { id: '', value: 0 };
+
+    if (!isBalanceVisible) {
+      data = { id: allocation.id, value: 1111 };
+    } else {
+      data = allocation;
+    }
+
+    return data;
+  });
+
+  const calculateBalanceData = pieChartBalanceData.map((asset) => {
+    let data: PieChartData = { id: '', value: 0 };
+
+    if (!isBalanceVisible) {
+      data = { id: asset.id, value: 1 };
+    } else {
+      data = asset;
+    }
+
+    return data;
+  });
+
   const { mutate: getBalance, isLoading: isBalanceLoading } = useMutation({
     mutationFn: async () => {
       const url = `/api/portfolio/${slug}/balance`;
@@ -145,7 +169,7 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedB
           <h2 className="uppercase font-bold text-xl text-zinc-600">Allocation</h2>
           <p className="text-zinc-400 text-sm">in $</p>
           <div className="w-full h-[300px]">
-            <PieChart data={pieChartAllocationData} colorScheme="paired" />
+            <PieChart data={calculateAllocationChartData} colorScheme="paired" />
           </div>
         </div>
 
@@ -154,7 +178,7 @@ const PortfolioDetailsHeader: FC<PortfolioDetailsHeaderProps> = ({ slug, cachedB
           <p className="text-zinc-400 text-sm">in $</p>
 
           <div className="w-full h-[300px]">
-            <PieChart data={pieChartBalanceData} colorScheme="green_blue" showLegend={false} />
+            <PieChart data={calculateBalanceData} colorScheme="green_blue" showLegend={false} />
           </div>
         </div>
       </div>
