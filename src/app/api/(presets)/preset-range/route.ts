@@ -70,7 +70,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
 
         return response.data;
       } catch (error) {
-        // Handle any errors that may occur during the request
         console.error('Error creating Auto-Invest plan:', error);
         throw error;
       }

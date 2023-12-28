@@ -31,7 +31,6 @@ export async function POST(request: NextRequest, response: NextResponse) {
     // Create a new cipher for the API secret
     const encryptedApiSecret = encrypt(apiSecret, secretKey, iv);
 
-    // Store encrypted secrets in DB
     await db.secret.create({
       data: {
         key: encryptedApiKeyWithIV,
@@ -51,9 +50,7 @@ export async function POST(request: NextRequest, response: NextResponse) {
     return new Response('OK', { status: 200 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      // return new Response(error.message, { status: 422 });
-
-      console.log(error);
+      return new Response(error.message, { status: 422 });
     }
 
     return new Response('Could not create Connection', { status: 500, statusText: JSON.stringify(error) });

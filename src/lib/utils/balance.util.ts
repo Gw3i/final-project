@@ -6,7 +6,6 @@ export const normalizeBalance = (balance: BinanceBalance[] | KrakenBalanceWithCu
     return balance.map((b) => ({
       name: b.asset,
       value: b.free,
-      // TODO: Add currentPrice and totalPrice
       currentPrice: null,
       totalPrice: null,
       isStaked: false,
