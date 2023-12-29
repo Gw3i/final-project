@@ -13,8 +13,9 @@ const Navbar = async () => {
 
   return (
     <nav className="grid grid-cols-[1fr,auto,auto] items-center gap-2 px-4 py-2 pr-[15px] border-b border-b-slate-500">
-      <Link href="/">
+      <Link href="/" className="inline-flex gap-2 items-center">
         <Logo />
+        <p className="text-lg font-semibold text-zinc-700">FolioOne</p>
       </Link>
       <div className="flex items-center">{session?.user && <BalanceVisibilityButton />} </div>
 

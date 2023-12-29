@@ -28,6 +28,7 @@ export async function GET() {
     return new Response(JSON.stringify(totalBalance), { status: 200 });
   } catch (error) {
     // TODO: Enhance error message
-    return new Response('Internal Server Error', { status: 500, statusText: JSON.stringify(error) });
+    console.log(error);
+    // return new Response('Internal Server Error', { status: 500, statusText: JSON.stringify(error) });
   }
 }

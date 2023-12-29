@@ -13,7 +13,7 @@ export interface IsBalanceVisibleContextProviderProps {
 }
 
 export const BalanceVisibilityContext = createContext<IsBalanceVisibleContextProviderProps>({
-  isBalanceVisible: true,
+  isBalanceVisible: false,
   setIsBalanceVisible: () => {},
 });
 
